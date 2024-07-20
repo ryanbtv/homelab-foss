@@ -3,3 +3,57 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+- shard1
+
+patches:
+  # Enable config sharding
+  - target:
+      kind: Deployment
+      name: "(source-controller|kustomize-controller|helm-controller)"
+      annotationSelector: "!sharding.fluxcd.io/role"
+    patch: |
+      - op: add
+        path: /spec/template/spec/containers/0/args/0
+        value: --watch-label-selector=!sharding.fluxcd.io/key   
+
+  # Enable in-memory kustomize builds
+  # When increasing the number of concurrent reconciliations, it is advised to use tmpfs for the /tmp filesystem to speed up the Flux kustomize build operations:
+  - patch: |
+      - op: replace
+        path: /spec/template/spec/volumes/0
+        value:
+          name: temp
+          emptyDir:
+            medium: Memory      
+    target:
+      kind: Deployment
+      name: kustomize-controller
+  # Increase the number of workers and limits 
+  # If Flux is managing hundreds of applications, it is advised to increase the number of reconciliations that can be performed in parallel and to bump the resources limits:
+  - patch: |
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --concurrent=10
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --requeue-dependency=5s      
+    target:
+      kind: Deployment
+      name: "(kustomize-controller|helm-controller|source-controller)"
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: all
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                resources:
+                  limits:
+                    cpu: 2000m
+                    memory: 2Gi      
+    target:
+      kind: Deployment
+      name: "(kustomize-controller|helm-controller|source-controller)"
