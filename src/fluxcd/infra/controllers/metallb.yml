@@ -1,47 +1,16 @@
+# Level 0 = no dependencies
 ---
-apiVersion: v1
-kind: Namespace
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
   name: metallb
-  labels:
-    pod-security.kubernetes.io/enforce: privileged
-
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: metallb
-  namespace: metallb
+  namespace: flux-system
 spec:
-  interval: 24h
-  url: https://metallb.github.io/metallb
-
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: metallb
-  namespace: metallb
-spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: metallb
-      version: "0.14.8"
-      sourceRef:
-        kind: HelmRepository
-        name: metallb
-        namespace: metallb
-      interval: 12h
-  values:
-##### TODO: Deploy these after Prometheus is deployed ####
-#    prometheus:
-#      podMonitor:
-#        enabled: true
-#      prometheusRule:
-#        enabled: true
-    speaker:
-      frr:
-        enabled: true
-    crds:
-      enabled: true
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./src/fluxcd/infra/controllers/cloudflared
+  prune: true

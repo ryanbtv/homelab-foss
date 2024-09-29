@@ -1,0 +1,34 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  dependsOn:
+    - name: metallb
+      namespace: metallb
+  interval: 30m
+  chart:
+    spec:
+      chart: longhorn
+      version: "1.7.1"
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: longhorn-system
+      interval: 12h
+  values:
+    service:
+      ui:
+        type: LoadBalancer
+        loadBalancerIP: 10.1.50.129
+    preUpgradeChecker:
+      jobEnabled: false
+    defaultSettings:
+      allowCollectingLonghornUsageMetrics: false
+      defaultDataLocality: best-effort
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+    metrics:
+      serviceMonitor:
+        enabled: false # Will be set later via patch
