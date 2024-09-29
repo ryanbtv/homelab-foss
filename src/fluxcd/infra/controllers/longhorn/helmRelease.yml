@@ -19,6 +19,10 @@ spec:
         namespace: longhorn-system
       interval: 12h
   values:
+    service:
+      ui:
+        type: LoadBalancer
+        loadBalancerIP: 10.1.50.129
     preUpgradeChecker:
       jobEnabled: false
     defaultSettings:
