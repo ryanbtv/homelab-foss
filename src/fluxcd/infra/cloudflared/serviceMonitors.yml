@@ -5,10 +5,10 @@ metadata:
   name: cloudflared
   namespace: cloudflared
 spec:
-  jobLabel: serviceMonitor/ryanb.tv/cloudflared
+  jobLabel: serviceMonitor/${domain}/cloudflared
   selector:
     matchLabels:
-      ryanb.tv/app: cloudflared
+      mylabel/app: cloudflared
   endpoints:
   - port: prometheus
     interval: 15s

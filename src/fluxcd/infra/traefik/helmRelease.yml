@@ -1,0 +1,92 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  dependsOn:
+    - name: metallb
+      namespace: metallb
+  interval: 30m
+  chart:
+    spec:
+      chart: traefik
+      version: "32.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: traefik
+      interval: 12h
+  values:
+    deployment:
+      enabled: true
+      # Can be either Deployment or DaemonSet
+      kind: DaemonSet
+    ingressRoute:
+      dashboard:
+        enabled: false
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
+    kubernetesIngress:
+      enabled: true
+    globalArguments:
+      - "--global.checknewversion=false"
+      - "--global.sendanonymoususage=false"
+    additionalArguments:
+      - "--serversTransport.insecureSkipVerify=true"
+    ports:
+      web:
+        port: 8000
+        expose: true
+        exposedPort: 80
+        protocol: TCP
+        redirectTo: 
+          port: websecure
+      websecure:
+        port: 8443
+        expose: true
+        exposedPort: 443
+        protocol: TCP
+        forwardedHeaders:
+          insecure: true
+        proxyProtocol:
+          insecure: true
+      metrics:
+        port: 9100
+        exposed: true
+    service:
+      spec:
+        externalTrafficPolicy: Local
+        loadBalancerIP: "10.1.50.132"
+    logs:
+      ## Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
+      general:
+        # By default, the logs use a text format (common), but you can
+        # also ask for the json format in the format option
+        # format: json
+        # By default, the level is set to ERROR.
+        # Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+        level: INFO
+      access:
+        # To enable access logs
+        enabled: false
+        ## By default, logs are written using the Common Log Format (CLF) on stdout.
+        ## To write logs in JSON, use json in the format option.
+        ## If the given format is unsupported, the default (CLF) is used instead.
+        # format: json
+        # filePath: "/data/access.log"
+        # bufferingSize: 100
+    persistence:
+      enabled: false
+    metrics:
+      prometheus:
+        entryPoint: metrics
+        addEntryPointsLabels: true
+        addRoutersLabels: true
+        addServicesLabels: true
+        service:
+          enabled: true
+          labels:
+            mylabel/app: traefik

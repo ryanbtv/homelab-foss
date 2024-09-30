@@ -8,6 +8,7 @@ spec:
   dependsOn:
     - name: metallb
     - name: longhorn
+    - name: sealed-secrets
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -16,3 +17,7 @@ spec:
     name: flux-system
   path: ./src/fluxcd/infra/prometheus
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: infra-sealed-secrets

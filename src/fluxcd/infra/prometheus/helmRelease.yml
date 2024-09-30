@@ -39,7 +39,7 @@ spec:
         podMonitorSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
-      externalUrl: https://prometheus.ryanb.tv
+      externalUrl: https://prometheus.${domain}
     alertmanager:
       enabled: true
       service:
@@ -94,7 +94,7 @@ spec:
               resources:
                 requests:
                   storage: 50Gi
-      externalUrl: https://alertmanager.ryanb.tv
+      externalUrl: https://alertmanager.${domain}
     grafana:
       adminUser: admin
       adminPassword: admin

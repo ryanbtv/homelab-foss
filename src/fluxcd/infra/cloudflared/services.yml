@@ -4,7 +4,7 @@ metadata:
   name: cloudflared
   namespace: cloudflared
   labels:
-    ryanb.tv/app: cloudflared
+    mylabel/app: cloudflared
 spec:
   selector:
     app.kubernetes.io/name: cloudflared

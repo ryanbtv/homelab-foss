@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  jobLabel: serviceMonitor/${domain}/traefik
+  selector:
+    matchLabels:
+      mylabel/app: traefik
+  endpoints:
+  - port: metrics
+    interval: 15s
