@@ -7,6 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: sealed-secrets # CloudFlare API Token
+    - name: prometheus # ServiceMonitors
   interval: 1h
   retryInterval: 1m
   timeout: 5m
