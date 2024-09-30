@@ -1,0 +1,216 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: prometheus
+      version: "61.3.2"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: prometheus
+      interval: 12h
+  values:
+    kubeProxy:
+      service:
+        selector:
+          component: kube-proxy
+    prometheus:
+      enabled: true
+      service:
+        enabled: true
+        loadBalancerIP: "10.1.501.30"
+        type: LoadBalancer
+      prometheusSpec:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+        podMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+      externalUrl: https://prometheus.ryanb.tv
+    alertmanager:
+      enabled: true
+      service:
+        enabled: true
+        loadBalancerIP: "10.1.50.131"
+        type: LoadBalancer
+      config:
+        global:
+          resolve_timeout: 1m
+          slack_api_url: "https://hooks.slack.com/services/null"
+        route:
+          receiver: "slack-notifications"
+          group_by:
+            - job
+        receivers:
+          - name: "null"
+          - name: "slack-notifications"
+            slack_configs:
+              - channel: "#alertmanager"
+                send_resolved: true
+                icon_url: https://avatars3.githubusercontent.com/u/3380462
+                title: |-
+                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
+                  {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+                    {{" "}}(
+                    {{- with .CommonLabels.Remove .GroupLabels.Names }}
+                      {{- range $index, $label := .SortedPairs -}}
+                        {{ if $index }}, {{ end }}
+                        {{- $label.Name }}="{{ $label.Value -}}"
+                      {{- end }}
+                    {{- end -}}
+                    )
+                  {{- end }}
+                text: >-
+                  {{ range .Alerts -}}
+                  *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+                  *Description:* {{ .Annotations.description }}
+
+                  *Details:*
+                    {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+                    {{ end }}
+                  {{ end }}
+      alertmanagerSpec:
+        replicas: 1
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+      externalUrl: https://alertmanager.ryanb.tv
+    grafana:
+      adminUser: admin
+      adminPassword: admin
+      persistence:
+        enabled: false
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: TeslaMate
+              type: postgres
+              url: teslamate-db.teslamate.svc.cluster.local
+              user: teslamate
+              database: teslamate
+              password: secret
+              access: proxy
+              basicAuth: false
+              withCredentials: false
+              isDefault: false
+              secureJsonData:
+                password: secret
+              jsonData:
+                postgresVersion: 14
+                sslmode: disable
+              version: 1
+              editable: true
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: "teslamate"
+              orgId: 1
+              folder: TeslaMate
+              folderUid: Nr4ofiDZk
+              type: file
+              disableDeletion: false
+              editable: true
+              updateIntervalSeconds: 86400
+              options:
+                path: /var/lib/grafana/dashboards/teslamate
+      dashboards:
+        teslamate:
+          charge-level:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charge-level.json
+          charges:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charges.json
+          charging-stats:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/charging-stats.json
+          drive-stats:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/drive-stats.json
+          drives:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/drives.json
+          efficiency:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/efficiency.json
+          locations:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/locations.json
+          mileage:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/mileage.json
+          overview:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/overview.json
+          projected-range:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/projected-range.json
+          statues:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/states.json
+          statistics:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/statistics.json
+          timeline:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/timeline.json
+          trip:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/trip.json
+          updates:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/updates.json
+          vampire-drain:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/vampire-drain.json
+          visited:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/visited.json
+          charge-details:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/internal/charge-details.json
+          drive-details:
+            url: https://raw.githubusercontent.com/teslamate-org/teslamate/master/grafana/dashboards/internal/drive-details.json
+    crds:
+      enabled: true
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: blackbox-exporter
+  namespace: prometheus
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: prometheus-blackbox-exporter
+      version: "9.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: prometheus
+      interval: 12h
+  values:
+    replicas: 2
+    config:
+      modules:
+        http:
+          prober: http
+          timeout: 5s
+          http:
+            valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+            follow_redirects: true
+            preferred_ip_protocol: "ip4"
+        icmp:
+          prober: icmp
+          icmp:
+            preferred_ip_protocol: ip4
+        tcp:
+          prober: tcp
+          tcp:
+            preferred_ip_protocol: ip4
