@@ -12,5 +12,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/controllers/metallb
+  path: ./src/fluxcd/infra/metallb
   prune: true

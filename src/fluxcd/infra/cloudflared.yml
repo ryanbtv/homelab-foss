@@ -14,5 +14,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/controllers/cloudflared
+  path: ./src/fluxcd/infra/cloudflared
   prune: true
