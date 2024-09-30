@@ -23,6 +23,4 @@ spec:
       enabled: true
       servicemonitor:
         enabled: true
-      podmonitor:
-        enabled: true
     replicas: 2
