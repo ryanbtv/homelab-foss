@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: cert-manager
-      version: "1.16.3"
+      version: "1.15.3"
       sourceRef:
         kind: HelmRepository
         name: cert-manager
@@ -19,8 +19,6 @@ spec:
     extraArgs:
       - --dns01-recursive-nameservers-only
       - --dns01-recursive-nameservers=adam.ns.cloudflare.com:53,betty.ns.cloudflare.com:53
-    crds:
-      enabled: true
     prometheus:
       enabled: true
       servicemonitor:
