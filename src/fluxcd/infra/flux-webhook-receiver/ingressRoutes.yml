@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fluxcd-webhook-receiver
+  namespace: flux-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`fluxhook.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: fluxcd-webhook-receiver
+          kind: Service
+          port: http
+  tls: {}
