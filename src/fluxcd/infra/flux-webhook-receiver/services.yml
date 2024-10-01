@@ -4,7 +4,6 @@ metadata:
   name: flux-webhook-receiver
   namespace: flux-system
 spec:
-  type: LoadBalancer
   selector:
     app: notification-controller
   ports:
