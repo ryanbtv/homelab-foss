@@ -5,10 +5,10 @@ metadata:
   name: flux-webhook-receiver
   namespace: flux-system
 spec:
-  type: github
-  events:
-    - "ping"
-    - "push"
+  type: generic
+#  events:
+#    - "ping"
+#    - "push"
   secretRef:
     name: webhook-token
   resources:
