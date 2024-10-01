@@ -1,0 +1,19 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-job
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  honorTimestamps: true
+  honorLabels: true
+  authorization:
+    type: Bearer
+    credentials:
+      name: prom-sc-minio # Secret Name
+      key: bearer # Key within the Secret to use
+  metricsPath: /minio/v2/metrics/cluster
+  staticConfigs:
+    - targets: ['s3.ff.lan:9000']
