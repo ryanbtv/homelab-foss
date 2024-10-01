@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-  name: minio-job
+  name: minio-job-cluster
   namespace: prometheus
   labels:
     release: prometheus
@@ -15,5 +15,65 @@ spec:
       name: prom-sc-minio # Secret Name
       key: bearer # Key within the Secret to use
   metricsPath: /minio/v2/metrics/cluster
+  staticConfigs:
+    - targets: ['s3.ff.lan:9000']
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-job-node
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  honorTimestamps: true
+  honorLabels: true
+  authorization:
+    type: Bearer
+    credentials:
+      name: prom-sc-minio # Secret Name
+      key: bearer # Key within the Secret to use
+  metricsPath: /minio/v2/metrics/node
+  staticConfigs:
+    - targets: ['s3.ff.lan:9000']
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-job-bucket
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  honorTimestamps: true
+  honorLabels: true
+  authorization:
+    type: Bearer
+    credentials:
+      name: prom-sc-minio # Secret Name
+      key: bearer # Key within the Secret to use
+  metricsPath: /minio/v2/metrics/bucket
+  staticConfigs:
+    - targets: ['s3.ff.lan:9000']
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-job-resource
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  honorTimestamps: true
+  honorLabels: true
+  authorization:
+    type: Bearer
+    credentials:
+      name: prom-sc-minio # Secret Name
+      key: bearer # Key within the Secret to use
+  metricsPath: /minio/v2/metrics/resource
   staticConfigs:
     - targets: ['s3.ff.lan:9000']
