@@ -29,6 +29,7 @@ spec:
       allowCollectingLonghornUsageMetrics: false
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      defaultDataPath: /var/mnt/data
     metrics:
       serviceMonitor:
         enabled: false # Will be set later via patch
