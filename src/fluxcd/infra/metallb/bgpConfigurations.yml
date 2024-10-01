@@ -27,7 +27,7 @@ metadata:
   namespace: metallb
 spec:
   detectMultiplier: 3
-  echoMode: false
+  echoMode: true
 
 ---
 apiVersion: metallb.io/v1beta2
