@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: kube-system
 
 resources:
-  - talos-ccm.yml
+  - talos-cloud-controller-manager.yml
   - github.com/kubernetes-csi/external-snapshotter/client/config/crd
   - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/ha-install.yaml
   - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
