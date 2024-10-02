@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: s3-csi
-  namespace: s3-csi
-spec:
-  interval: 24h
-  url: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
