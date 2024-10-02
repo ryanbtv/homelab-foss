@@ -16,13 +16,12 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: jellyfin
+        dataset.0.id: minio-media-rw # Datashim - must match datashim dataset name
+        dataset.0.useas: mount # Datashim
     spec:
 #      runtimeClassName: nvidia
       containers:
       - name: jellyfin
-        labels:
-          dataset.0.id: minio-media-rw # Datashim - must match datashim dataset name
-          dataset.0.useas: mount # Datashim
         image: docker.io/jellyfin/jellyfin
         imagePullPolicy: Always
         ports:
