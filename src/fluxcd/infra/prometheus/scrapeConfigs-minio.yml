@@ -1,4 +1,20 @@
 ---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: prom-sc-minio
+  namespace: prometheus
+spec:
+  encryptedData:
+    bearer: AgBdgJVe4096vXSu89XYOnlRy9b3t7m92a/zJXltprkN+NbjnpQiYZIDq0CVqEDJeADJWZoX0iTGheUClqgSd/QG3WWFAAnmUsbCoW8jI/FT35dqiQAdVTWLerllSLlwd6WudaCRqPrAVJdchbcA7TmwOTh8gXnmly26zo+F9w+PNv9DP56h19gJOSdWX5iI3PeceR8leNUw2iSWxA6DSwtug58GaoWAA3/rAXK1As3LLXXkZHQX7xDHP1/l5XRRJMrLPVh7jMRJ8+ZwXM+1GBvldF1fDmTxb06uWxxyDuCwuslrPQU1Rs+ZggoZRY+EZDcbTrXWPSL1KBaDTQ/Glu60vrR28Tftfg65htbHhbey1lWpPh0z0nVq9g2J75zwFg2mtMZGiODn1weklRmZ3far9kxS08yAa6x5NMn7Rdz92rB7tszTNfY9iUN23oIBJDaQU55ozPWmaiJoW5Q4DHs7SMF9adpgxaWhKWuP07h9w/oprsvYdwcgGERmNwK0vgIGNGQISWQ84kmhGhHeLJIrlb7QoJBlGmkIUrUH6yt/ddIPHHBIFN8yeCPbOtWj7Je/cNi4UPcliLfHhJlzwNEQ9XasH8zrqpHWbVDGhD5xLuoOfsNxrbAA179pxsC8qmjUMCT2sf3ZUIzePnBtEKAT7ECFh0epn+kbNbFniY/tw+isDNlAQOa3ziTjeV6yBIfsFEieYpcH1x8nsfOi8a7bI/CmLK8HRDG+tBMBwpahE/176hrw4R79U86UYQ3deETVChxUtogFqiqPnSZoj4W1vQ7BHcn6V5eAXCB3BDfl0atA/F3rX+f/MBCBvdL/619ITzG0V0BEOkRbNLWC00WoXGoUtr8YzbOen0frboyj/bfDZcYzCbx5rpUPi1iby3pcDa3MBnIfzj0yCCNmXIeHGssjHsl9NuLype6MF5kKiWqJMsWXJDMs3acLyL+KLeU=
+  template:
+    metadata:
+      creationTimestamp: null
+      name: prom-sc-minio
+      namespace: prometheus
+
+---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:

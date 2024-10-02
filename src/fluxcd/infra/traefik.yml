@@ -43,7 +43,7 @@ metadata:
 spec:
   dependsOn:
     - name: traefik-crds
-    - name: prometheus-crds
+    - name: prometheus
     - name: sealed-secrets
   interval: 1h
   retryInterval: 1m
