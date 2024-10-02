@@ -7,9 +7,24 @@ metadata:
 spec:
   local:
     type: "COS"
-    secret-name: "minio-credentials" #see s3-secrets.yaml for an example
-    secret-namespace: "datashim" #optional if the secret is in the same ns as dataset
+    secret-name: "minio-credentials" #Must be in same namespace (it's below)
     endpoint: "http://s3.ff.lan:9000"
     bucket: "media"
     readonly: "false"
-    region: "" # Can be empty if not set in Minio
+
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: minio-credentials
+  namespace: jellyfin
+spec:
+  encryptedData:
+    accessKeyID: AgBknKsqNdfDEiGrgzFOIQotzmXzwPTuw7z2s9kOTs/PWBGcJrXj9ogsfzvkLcaurgqvO7N+SyD9aXI61PgrvZgZCBtaXPmRJSm2QlzFjyKa172zRE1Vbsqo+Vgo3Eeth2Jq1bMdSBu319l02jVo79vU0PoC8F4G2GEKR3tGWeUrChUqdFJ/aaosWcZ99EJMj9gAoEsUF/H5PoEEZDVJsSwDc0KLuPXHDjtxYPWKEhYIYXc6db6kV3XWiiO1x8vSeTIUYnaIXYpgNN811UmFoMecM4gCbgkNXigULQJQSR+hsRPSKKxPAW44lhU2G0ZNR/H7K8j4ONUJZS4peeAN9flKmx0dBfeU1gDAkYP2SFNCWJe3qZT+HV8sFY5qIL4broWSB30KFu/1sxRuWpNmPkTQPpPqDwoLKgeEZvJ6VhhPCA9hMFrNoCFB/Aty7mvwC4Q6xGD8v1EgQzUYfuAvsc09x1hB0/o3LqLP12dV9RmfP7ij2QP59TUr8MXpkXexB9vmjbrsBseu23x0wwkLaOq3AAue9m9IeAWub90t/vgowtNTP3Eia58DK7Cd8SwEmSIxEtSc99Bd7+NNKdc6k7m9VkT3wyAgC0L+qcZNr+7NgL/TjEiM6bZz9DHwrVRNnhNC+jKicBFd9aH6XzT+D9IEoxYr2AZp9nAuI5Z6asXRaEEsA7AmWT4exj3ZvpGxBSuKIyHKkA==
+    secretAccessKey: AgAp2iXPKU3apXJcvHpnP2ZRanb5sb5JrOYca4hCA6D1n38MEOJxiGiTtT/YJYtl4OkMkyzZjxuP0Ik641F/cMvsEsw/lueULHdo5wAbDP6oJp2I+6rYAsmTLTQODJcT3GkQy3o/N89VYHgBvaja9K+WEeLJowXWLTzZBN+ACPttcCWi+ZIhXmHVvANQ9cfKsoxHA5M5RYWq3+4k442KwkReN73p16CX4IqU8WjgSYZ2mEadt23HEYatw9Y93x8PqREvNysdh8GqZpuVhIbqWhurfuKnrkYMCW2HscTSc7oC5tdzy+CpoHlwnuhdZc9S2UBiAS6kNipcMf5DmKgkTDUDjmjVc4N5iGqZzPswPMKzoC5dfjHpxY+OTr0ID5U5KW7Sqc2eL/GZI9fNtUIE5qNqwHUaL4ucILf1+kuCev99PYVkExNqVqCs4dmBfesuVTxZEwXSUbYI7Jfbr6Kzp6MJC2lZAmAOI4NauPEHwiBVZvhNtu0bee9vaQNTy7JgvI+KVrffdsRWAk9vNas2xw+w48gJLMnJCTZA4v/lUzvhvB/+5eGHYUX1in57i6z04GZvXsb66il1Di7rNaJp9NfgpVLaedb1uIbGRmNpHTXGGYEB4l6jRj+HYF2sjmFH/ZjG/5Sr8/DSP9ieJzKChpvU6kP/9ROdKPiAbgrc7Py15V9swbsk3hbgXscZDQ8t0RkodEaqycYf3g==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: minio-credentials
+      namespace: jellyfin
