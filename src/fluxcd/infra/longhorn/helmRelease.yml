@@ -30,6 +30,8 @@ spec:
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       defaultDataPath: /var/mnt/data
+      backupTarget: s3://backups@eastus2/longhorn
+      backupTargetCredentialSecret: minio-credentials
     metrics:
       serviceMonitor:
         enabled: false # Will be set later via patch
