@@ -5,3 +5,4 @@ resources:
   - helmRelease.yml
   - helmRepository.yml
   - namespace.yml
+  - sealed-secrets

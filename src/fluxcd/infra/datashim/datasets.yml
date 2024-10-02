@@ -1,0 +1,29 @@
+---
+apiVersion: datashim.io/v1alpha1
+kind: Dataset
+metadata:
+  name: minio-media-ro
+  namespace: datashim
+spec:
+  local:
+    type: "COS"
+    secret-name: "minio-credentials" #see s3-secrets.yaml for an example
+    endpoint: "http://s3.ff.lan:9000"
+    bucket: "media"
+    readonly: "true"
+    region: "" # Can be empty if not set in Minio
+
+---
+apiVersion: datashim.io/v1alpha1
+kind: Dataset
+metadata:
+  name: minio-media-rw
+  namespace: datashim
+spec:
+  local:
+    type: "COS"
+    secret-name: "minio-credentials" #see s3-secrets.yaml for an example
+    endpoint: "http://s3.ff.lan:9000"
+    bucket: "media"
+    readonly: "false"
+    region: "" # Can be empty if not set in Minio
