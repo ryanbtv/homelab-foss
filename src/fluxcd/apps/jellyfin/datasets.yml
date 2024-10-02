@@ -1,0 +1,15 @@
+---
+apiVersion: datashim.io/v1alpha1
+kind: Dataset
+metadata:
+  name: media
+  namespace: jellyfin
+spec:
+  local:
+    type: "COS"
+    secret-name: "minio-credentials" #see s3-secrets.yaml for an example
+    secret-namespace: "datashim" #optional if the secret is in the same ns as dataset
+    endpoint: "http://s3.ff.lan:9000"
+    bucket: "media"
+    readonly: "false"
+    region: "" # Can be empty if not set in Minio

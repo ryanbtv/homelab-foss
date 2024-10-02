@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: jellyfin
-        dataset.0.id: minio-media-rw # Datashim - must match datashim dataset name
+        dataset.0.id: media # Datashim - must match datashim dataset name
         dataset.0.useas: mount # Datashim
     spec:
 #      runtimeClassName: nvidia
