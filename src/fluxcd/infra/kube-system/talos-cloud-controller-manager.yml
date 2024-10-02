@@ -40,6 +40,4 @@ spec:
 
     # Allow node CSR approval and cloud-node controllers
     enabledControllers:
-      - cloud-node
-      - node-csr-approval
-      - node-ipam-controller
+      - '*'
