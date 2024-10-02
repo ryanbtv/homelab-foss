@@ -51,7 +51,7 @@ spec:
     service:
       spec:
         externalTrafficPolicy: Local
-        loadBalancerIP: "10.1.50.132"
+        loadBalancerIP: "10.1.50.133"
     logs:
       ## Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
       general:
