@@ -32,8 +32,6 @@ spec:
         volumeMounts:
           - name: jellyfin-config
             mountPath: /config
-          - name: media
-            mountPath: /nas
           - name: tmpfs
             mountPath: /transcode
         env:
