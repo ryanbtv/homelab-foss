@@ -45,6 +45,7 @@ spec:
     - name: traefik-crds
     - name: prometheus
     - name: sealed-secrets
+    - name: cert-manager-assets
   interval: 1h
   retryInterval: 1m
   timeout: 5m
