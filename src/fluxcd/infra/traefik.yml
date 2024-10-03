@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/traefik/crds
+  path: ./src/fluxcd/infra/traefik-crds
   prune: true
 
 ---
@@ -52,7 +52,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/traefik/assets
+  path: ./src/fluxcd/infra/traefik-assets
   prune: true
   postBuild:
     substituteFrom:

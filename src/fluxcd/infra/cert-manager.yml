@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/cert-manager/crds
+  path: ./src/fluxcd/infra/cert-manager-crds
   prune: true
 
 ---
@@ -46,7 +46,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./src/fluxcd/infra/cert-manager/assets
+  path: ./src/fluxcd/infra/cert-manager-assets
   prune: true
   postBuild:
     substituteFrom:
