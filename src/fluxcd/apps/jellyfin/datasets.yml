@@ -11,3 +11,4 @@ spec:
     endpoint: "http://s3.ff.lan:9000"
     bucket: "media"
     readonly: "false"
+    region: "eastus2"
