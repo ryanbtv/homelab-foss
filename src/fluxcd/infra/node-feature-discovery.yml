@@ -5,11 +5,14 @@ metadata:
   name: node-feature-discovery
   namespace: flux-system
 spec:
+  dependsOn: []
+  path: ./src/fluxcd/infra/node-feature-discovery
+  targetNamespace: node-feature-discovery 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/node-feature-discovery
   prune: true

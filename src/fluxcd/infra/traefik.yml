@@ -5,13 +5,15 @@ metadata:
   name: traefik-crds
   namespace: flux-system
 spec:
+  dependsOn: []
+  path: ./src/fluxcd/infra/traefik-crds
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/traefik-crds
   prune: true
 
 ---
@@ -25,13 +27,14 @@ spec:
     - name: traefik-crds
     - name: metallb # LoadBalancerIP
     - name: prometheus # LoadBalancerIP
+  path: ./src/fluxcd/infra/traefik
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/traefik
   prune: true
 
 ---
@@ -46,11 +49,13 @@ spec:
     - name: prometheus
     - name: sealed-secrets
     - name: cert-manager-assets
+  path: ./src/fluxcd/infra/traefik-assets
+  targetNamespace: traefik 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/traefik-assets
   prune: true

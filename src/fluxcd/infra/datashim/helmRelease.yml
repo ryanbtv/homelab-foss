@@ -15,3 +15,5 @@ spec:
         name: datashim
         namespace: datashim
       interval: 12h
+  install:
+    createNamespace: true

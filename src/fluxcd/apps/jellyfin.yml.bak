@@ -14,5 +14,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: homelab-foss  
-  path: ./src/fluxcd/apps/jellyfin
   prune: true
+  path: ./src/fluxcd/apps/jellyfin

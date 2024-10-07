@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: src-fluxcd-apps
+  name: flux-namespaces
   namespace: flux-system
 spec:
   interval: 5m0s
@@ -12,25 +12,22 @@ spec:
   ignore: |
     # exclude all
     /*
-    # include deploy dir
-    !/src/fluxcd/apps/*.yml
+    # include only namespaces files:
+    !/src/fluxcd/**/namespaces.yml
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-apps
+  name: flux-namespaces
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: flux-infra
-  - name: namespaces
+  path: ./src/fluxcd/infra/
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: src-fluxcd-apps  
-  path: ./src/fluxcd/apps
+    name: flux-namespaces
   prune: true
-  wait: true

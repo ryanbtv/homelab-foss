@@ -5,13 +5,16 @@ metadata:
   name: cert-manager-crds
   namespace: flux-system
 spec:
+  dependsOn: []
+  path: ./src/fluxcd/infra/cert-manager-crds
+  targetNamespace: cert-manager 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/cert-manager-crds
   prune: true
 
 ---
@@ -23,13 +26,15 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager-crds
+  path: ./src/fluxcd/infra/cert-manager
+  targetNamespace: cert-manager 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/cert-manager
   prune: true
 
 ---
@@ -42,11 +47,13 @@ spec:
   dependsOn:
     - name: cert-manager
     - name: sealed-secrets
+  path: ./src/fluxcd/infra/cert-manager-assets
+  targetNamespace: cert-manager 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/cert-manager-assets
   prune: true

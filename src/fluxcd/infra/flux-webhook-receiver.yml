@@ -7,11 +7,13 @@ metadata:
 spec:
   dependsOn:
     - name: sealed-secrets
+  path: ./src/fluxcd/infra/flux-webhook-receiver
+  targetNamespace: flux-system 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/flux-webhook-receiver
   prune: true

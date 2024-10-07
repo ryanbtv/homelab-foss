@@ -8,18 +8,13 @@ spec:
   dependsOn:
     - name: sealed-secrets # CloudFlare API Token
     - name: prometheus # ServiceMonitors
+  path: ./src/fluxcd/infra/cloudflared
+  targetNamespace: cloudflared 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: homelab-foss
-  path: ./src/fluxcd/infra/cloudflared
   prune: true
-  healthChecks:
-    - apiVersion: apiextensions.k8s.io/v1
-      kind: CustomResourceDefinition
-      name: sealedsecrets.bitnami.com
-    - apiVersion: apiextensions.k8s.io/v1
-      kind: CustomResourceDefinition
-      name: servicemonitors.monitoring.coreos.com
