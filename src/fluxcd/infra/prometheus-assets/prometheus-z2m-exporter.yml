@@ -43,6 +43,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus-z2m-exporter
+  namespace: prometheus
   labels:
     mylabel/app: prometheus-z2m-exporter
 spec:
@@ -59,6 +60,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: prometheus-z2m-exporter-sm
+  namespace: prometheus
 spec:
   jobLabel: serviceMonitor/ryanb.tv/zigbe2mqtt
   selector:

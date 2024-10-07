@@ -41,6 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus-tasmota-exporter
+  namespace: prometheus
   labels:
     mylabel/app: prometheus-tasmota-exporter
 spec:
@@ -57,6 +58,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: prometheus-tasmota-exporter-sm
+  namespace: prometheus
 spec:
   jobLabel: serviceMonitor/ryanb.tv/tasmota
   selector:
