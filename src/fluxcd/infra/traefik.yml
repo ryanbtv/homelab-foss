@@ -42,7 +42,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik-crds
+    - name: traefik
     - name: prometheus
     - name: sealed-secrets
     - name: cert-manager-assets
@@ -54,7 +54,3 @@ spec:
     name: flux-system
   path: ./src/fluxcd/infra/traefik-assets
   prune: true
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: infra-sealed-secrets

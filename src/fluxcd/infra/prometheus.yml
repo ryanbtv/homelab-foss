@@ -17,7 +17,3 @@ spec:
     name: flux-system
   path: ./src/fluxcd/infra/prometheus
   prune: true
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: infra-sealed-secrets

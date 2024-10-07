@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-pve-exporter
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus-pve-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pve-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus-pve-exporter
+    spec:
+      containers:
+        - name: prometheus-pve-exporter
+          image: docker.io/prompve/prometheus-pve-exporter
+          ports:
+            - containerPort: 9221
+              name: http
+              protocol: TCP
+          env:
+            - name: PVE_USER
+              value: 'root@pam'
+            - name: PVE_PASSWORD
+              value: Imsoin11
+            - name: PVE_VERIFY_SSL
+              value: "false"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-pve-exporter
+  labels:
+    mylabel/app: prometheus-pve-exporter
+spec:
+  selector:
+    app.kubernetes.io/name: prometheus-pve-exporter
+  ports:
+  - name: prometheus
+    protocol: TCP
+    port: 9221
+    targetPort: http
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-pve-exporter-sm
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/prometheus-pve-exporter
+  selector:
+    matchLabels:
+      mylabel/app: prometheus-pve-exporter
+  endpoints:
+  - port: prometheus
+    interval: 15s
+    path: /pve
+    params:
+      target:
+      - 10.1.0.31
+  - port: prometheus
+    interval: 15s
+    path: /pve
+    params:
+      target:
+      - 10.1.0.32
+  - port: prometheus
+    interval: 15s
+    path: /pve
+    params:
+      target:
+      - 10.1.0.33

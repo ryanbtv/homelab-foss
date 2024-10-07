@@ -5,7 +5,7 @@ metadata:
   name: cloudflared
   namespace: cloudflared
 spec:
-  jobLabel: serviceMonitor/${domain}/cloudflared
+  jobLabel: serviceMonitor/ryanb.tv/cloudflared
   selector:
     matchLabels:
       mylabel/app: cloudflared

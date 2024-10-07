@@ -1,0 +1,237 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus.rules
+  namespace: prometheus
+spec:
+  groups:
+  - name: frigate.rules
+    rules:
+    - alert: FrigateProcessFpsDown
+      annotations:
+        description: The frigate service {{ $labels.service }} is not processing any packets for detection ({{$value}} fps).
+        summary: Frigate is not processing frames.
+      expr: |-
+        frigate_process_fps{namespace="frigate"} == 0
+      for: 1m
+      labels:
+        severity: critical
+    - alert: FrigateSkippedFrames
+      annotations:
+        description: The frigate service {{ $labels.service }} is experiencing skipped frames ({{$value}} fps).
+        summary: Frigate has Skipped Frames.
+      expr: |-
+        frigate_skipped_fps{namespace="frigate"} > 10
+      for: 1m
+      labels:
+        severity: critical
+    - alert: FrigateServiceDown
+      annotations:
+        description: The frigate service {{ $labels.service }} is down.
+        summary: Frigate Service Down.
+      expr: |-
+        frigate_service_info{namespace="frigate"} != 1
+      for: 1m
+      labels:
+        severity: critical
+    - alert: InferenceSpeedSlow
+      annotations:
+        description: The inference speed for camera {{ $labels.service }} is slow ({{$value}}ms).
+        summary: Inference speed is slow.
+      expr: |-
+        frigate_detector_inference_speed_seconds{name="tensorrt"} * 1000 > 80
+      for: 1m
+      labels:
+        severity: warning
+  - name: blackbox.rules
+    rules:
+    - alert: BlackboxProbeFailed
+      expr: probe_success == 0
+      for: 5m
+      labels:
+        severity: error
+      annotations:
+        summary: "Blackbox probe failed (instance {{ $labels.target }})"
+        message: "Probe failed\n  VALUE = {{ $value }}"
+    - alert: BlackboxProbeHttpFailure
+      expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
+      for: 5m
+      labels:
+        severity: error
+      annotations:
+        summary: "Blackbox probe HTTP failure (instance {{ $labels.target }})"
+        message: "HTTP status code is not 200-399\n  VALUE = {{ $value }}"
+    - alert: BlackboxSlowProbe
+      expr: avg_over_time(probe_duration_seconds[5m]) > 5 and probe_success == 1
+      labels:
+        severity: warning
+      annotations:
+        summary: "Blackbox slow probe (target {{ $labels.target }})"
+        message: "Blackbox probe took more than 5s to complete\n  VALUE = {{ $value }}"
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus-operator
+  name: zigbee2mqtt.rules
+  namespace: prometheus
+spec:
+  groups:
+  - name: zigbee2mqtt.rules
+    rules:
+    - alert: MqttExporterAbsent
+      expr: absent(up{job=~".*z2m-exporter.*"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: The mqtt exporter job is absent
+        description: The mqtt exporter job is absent
+    - alert: Zigbee2MqttUnavailable
+      expr: z2m_zigbee_availability == 0
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        summary: The zigbee device connection is lost
+        description: connection on topic {{$labels.topic}} is down
+    - alert: Zigbee2MqttLinkqualityLow
+      expr: z2m_linkquality < 15
+      for: 60m
+      labels:
+        severity: warning
+      annotations:
+        summary: The zigbee device link quality is low
+        description: link quality on topic {{$labels.topic}} is at {{$value}}
+    - alert: Zigbee2MqttBatteryLow
+      expr: z2m_battery < 40
+      for: 60m
+      labels:
+        severity: warning
+      annotations:
+        summary: The zigbee device battery level is low
+        description: battery level on topic {{$labels.topic}} is at {{$value}}%
+    - alert: Zigbee2MqttWaterLeakAlert
+      expr: z2m_water_leak > 0
+      labels:
+        severity: critical
+      annotations:
+        summary: A water leak detector is in state alarm
+        description: water leal detector on topic {{$labels.topic}} is reporting water
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus-operator
+  name: longhorn.rules
+  namespace: prometheus
+spec:
+  groups:
+  - name: longhorn.rules
+    rules:
+    - alert: LonghornVolumeUsageCritical
+      annotations:
+        description: Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% used for
+          more than 5 minutes.
+        summary: Longhorn volume capacity is over 90% used.
+      expr: 100 * (longhorn_volume_usage_bytes / longhorn_volume_capacity_bytes) > 90
+      for: 5m
+      labels:
+        issue: Longhorn volume {{$labels.volume}} usage on {{$labels.node}} is State:critical.
+        severity: critical
+    - alert: LonghornVolumeUsageWarning
+      annotations:
+        description: Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% used for
+          more than 5 minutes.
+        summary: Longhorn volume capacity is over 75% used.
+      expr: 100 * (longhorn_volume_usage_bytes / longhorn_volume_capacity_bytes) > 75
+      for: 5m
+      labels:
+        issue: Longhorn volume {{$labels.volume}} usage on {{$labels.node}} is State:warning.
+        severity: warning
+    - alert: LonghornVolumeActualSpaceUsedWarning
+      annotations:
+        description: The actual space used by Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% capacity for
+          more than 5 minutes.
+        summary: The actual used space of Longhorn volume is over 90% of the capacity.
+      expr: (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 90
+      for: 5m
+      labels:
+        issue: The actual used space of Longhorn volume {{$labels.volume}} on {{$labels.node}} is high.
+        severity: warning
+    - alert: LonghornVolumeStatusCritical
+      annotations:
+        description: Longhorn volume {{$labels.volume}} on {{$labels.node}} is Fault for
+          more than 2 minutes.
+        summary: Longhorn volume {{$labels.volume}} is Fault
+      expr: longhorn_volume_robustness == 3
+      for: 5m
+      labels:
+        issue: Longhorn volume {{$labels.volume}} is Fault.
+        severity: critical
+    - alert: LonghornVolumeStatusWarning
+      annotations:
+        description: Longhorn volume {{$labels.volume}} on {{$labels.node}} is Degraded for
+          more than 5 minutes.
+        summary: Longhorn volume {{$labels.volume}} is Degraded
+      expr: longhorn_volume_robustness == 2
+      for: 5m
+      labels:
+        issue: Longhorn volume {{$labels.volume}} is Degraded.
+        severity: warning
+    - alert: LonghornNodeStorageWarning
+      annotations:
+        description: The used storage of node {{$labels.node}} is at {{$value}}% capacity for
+          more than 5 minutes.
+        summary:  The used storage of node is over 70% of the capacity.
+      expr: (longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100 > 70
+      for: 5m
+      labels:
+        issue: The used storage of node {{$labels.node}} is high.
+        severity: warning
+    - alert: LonghornDiskStorageWarning
+      annotations:
+        description: The used storage of disk {{$labels.disk}} on node {{$labels.node}} is at {{$value}}% capacity for
+          more than 5 minutes.
+        summary:  The used storage of disk is over 70% of the capacity.
+      expr: (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) * 100 > 70
+      for: 5m
+      labels:
+        issue: The used storage of disk {{$labels.disk}} on node {{$labels.node}} is high.
+        severity: warning
+    - alert: LonghornNodeDown
+      annotations:
+        description: There are {{$value}} Longhorn nodes which have been offline for more than 5 minutes.
+        summary: Longhorn nodes is offline
+      expr: (avg(longhorn_node_count_total) or on() vector(0)) - (count(longhorn_node_status{condition="ready"} == 1) or on() vector(0)) > 0
+      for: 5m
+      labels:
+        issue: There are {{$value}} Longhorn nodes are offline
+        severity: critical
+    - alert: LonghornInstanceManagerCPUUsageWarning
+      annotations:
+        description: Longhorn instance manager {{$labels.instance_manager}} on {{$labels.node}} has CPU Usage / CPU request is {{$value}}% for
+          more than 5 minutes.
+        summary: Longhorn instance manager {{$labels.instance_manager}} on {{$labels.node}} has CPU Usage / CPU request is over 300%.
+      expr: (longhorn_instance_manager_cpu_usage_millicpu/longhorn_instance_manager_cpu_requests_millicpu) * 100 > 300
+      for: 5m
+      labels:
+        issue: Longhorn instance manager {{$labels.instance_manager}} on {{$labels.node}} consumes 3 times the CPU request.
+        severity: warning
+    - alert: LonghornNodeCPUUsageWarning
+      annotations:
+        description: Longhorn node {{$labels.node}} has CPU Usage / CPU capacity is {{$value}}% for
+          more than 5 minutes.
+        summary: Longhorn node {{$labels.node}} experiences high CPU pressure for more than 5m.
+      expr: (longhorn_node_cpu_usage_millicpu / longhorn_node_cpu_capacity_millicpu) * 100 > 90
+      for: 5m
+      labels:
+        issue: Longhorn node {{$labels.node}} experiences high CPU pressure.
+        severity: warning

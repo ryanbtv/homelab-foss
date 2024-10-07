@@ -5,7 +5,7 @@ metadata:
   name: traefik
   namespace: traefik
 spec:
-  jobLabel: serviceMonitor/${domain}/traefik
+  jobLabel: serviceMonitor/ryanb.tv/traefik
   selector:
     matchLabels:
       mylabel/app: traefik

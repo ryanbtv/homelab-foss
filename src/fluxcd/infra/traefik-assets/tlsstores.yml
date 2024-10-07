@@ -7,4 +7,4 @@ metadata:
 
 spec:
   defaultCertificate:
-    secretName:  ${domain}-prod-cert
+    secretName:  ryanb.tv-prod-cert

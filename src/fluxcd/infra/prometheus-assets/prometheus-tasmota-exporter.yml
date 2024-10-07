@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-tasmota-exporter
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus-tasmota-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-tasmota-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus-tasmota-exporter
+    spec:
+      containers:
+        - name: prometheus-tasmota-exporter
+          image: docker.io/kpetrem/mqtt-exporter
+          ports:
+            - containerPort: 9000
+              name: http
+              protocol: TCP
+          env:
+            - name: TZ
+              value: UTC
+            - name: MQTT_ADDRESS
+              value: emqx-listeners.emqx.svc.cluster.local
+            - name: MQTT_TOPIC
+              value: 'tasmotas/#'
+            - name: PROMETHEUS_PREFIX
+              value: 'tasmota_'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-tasmota-exporter
+  labels:
+    mylabel/app: prometheus-tasmota-exporter
+spec:
+  selector:
+    app.kubernetes.io/name: prometheus-tasmota-exporter
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9000
+    targetPort: http
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-tasmota-exporter-sm
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/tasmota
+  selector:
+    matchLabels:
+      mylabel/app: prometheus-tasmota-exporter
+  endpoints:
+  - port: http
+    interval: 15s

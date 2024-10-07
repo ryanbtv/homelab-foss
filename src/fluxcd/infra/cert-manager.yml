@@ -22,7 +22,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets # CloudFlare email
+    - name: cert-manager-crds
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -41,6 +41,7 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager
+    - name: sealed-secrets
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -49,7 +50,3 @@ spec:
     name: flux-system
   path: ./src/fluxcd/infra/cert-manager-assets
   prune: true
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: infra-sealed-secrets

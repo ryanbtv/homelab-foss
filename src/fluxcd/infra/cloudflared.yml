@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets # CloudFlare API Token & postBuild
+    - name: sealed-secrets # CloudFlare API Token
     - name: prometheus # ServiceMonitors
   interval: 1h
   retryInterval: 1m
@@ -16,7 +16,7 @@ spec:
     name: flux-system
   path: ./src/fluxcd/infra/cloudflared
   prune: true
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: infra-sealed-secrets
+  healthChecks:
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: sealedsecrets.bitnami.com
