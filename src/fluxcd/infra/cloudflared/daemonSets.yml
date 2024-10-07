@@ -24,11 +24,9 @@ spec:
           "--metrics",
           "0.0.0.0:9100",
           "run",
-          "--token",
-          "$(CF_TOKEN)"
           ]
         env:
-        - name: CF_TOKEN
+        - name: TUNNEL_TOKEN
           valueFrom:
             secretKeyRef:
               name: cloudflared-secrets
