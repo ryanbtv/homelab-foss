@@ -3,6 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: eqmx-sm
+  namespace: emqx
 spec:
   jobLabel: serviceMonitor/ryanb.tv/eqmx
   selector:
