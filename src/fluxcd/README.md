@@ -3,12 +3,11 @@
 Doc: 
 
 ``` bash
-flux bootstrap git \
-  --url=ssh://git@github.com/ryanbtv/homelab-foss \
-  --branch=main \
-  --private-key-file=/Users/ryanb/iCloud/keys/github/id_ed25519-github \
-  --path=src/fluxcd/clusters/prod \
-  --silent
+flux install --namespace=flux-system
+
+flux create source git homelab-foss \
+  --url=https://git@github.com/ryanbtv/homelab-foss \
+  --branch=main
 ```
 
 # Upgrade Flux

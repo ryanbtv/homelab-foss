@@ -10,7 +10,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab-foss
   path: ./src/fluxcd/infra/traefik-crds
   prune: true
 
@@ -30,7 +30,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab-foss
   path: ./src/fluxcd/infra/traefik
   prune: true
 
@@ -51,6 +51,6 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab-foss
   path: ./src/fluxcd/infra/traefik-assets
   prune: true

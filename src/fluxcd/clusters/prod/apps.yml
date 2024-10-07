@@ -1,0 +1,35 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: src-fluxcd-apps
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/ryanbtv/homelab-foss
+  ref:
+    branch: main
+  ignore: |
+    # exclude all
+    /*
+    # include deploy dir
+    !/src/fluxcd/apps/*.yml
+    
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-apps
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: flux-infra
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: homelab-foss  
+  path: ./src/fluxcd/apps
+  prune: true
+  wait: true

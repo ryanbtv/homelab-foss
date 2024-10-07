@@ -2,17 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-apps
+  name: jellyfin
   namespace: flux-system
 spec:
   dependsOn:
-  - name: flux-infra
+    - name: datashim # minio-media
+    - name: sealed-secrets # minio-creds
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
-  path: ./src/fluxcd/apps
+    name: homelab-foss  
+  path: ./src/fluxcd/apps/jellyfin
   prune: true
-  wait: true

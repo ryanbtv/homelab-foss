@@ -10,6 +10,6 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab-foss
   path: ./src/fluxcd/infra/longhorn-prereqs
   prune: true
