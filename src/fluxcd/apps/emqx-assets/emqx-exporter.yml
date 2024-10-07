@@ -1,0 +1,170 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: emqx-exporter-secret
+  namespace: emqx
+spec:
+  encryptedData:
+    password: AgA03SS6Gou5+msOm5ALF/WyFGP0QNrf5tdkqsnlSqwbZqG5aC8UtezomF5QA/xBEH5BCLwDYpV9yXUKMotldBAMnuim4zW4g/pgjLgENV6jBynwIo4RbhMGY+bd/N5ds1oWZM4Wgubz5WoCGUJ0bNejWHlHimdXX6Bd68uc+uOjBTpK7etFtXaKFdkttIqSrfpW5VeExm31AvL3gFzzyCSjDwNXP+Yaf+s5Xn9A+fCQzBsyzbrjZsmCm+c631luPwcyIpcqjVu0qxctvokOc2zJaMwFGzkdIsFizCFimnv7SqWWHPpMVp2Aw3ogpNtyRrf4IQ018CdP1uU9+StyShxxZKOI/P7g/UXdELplAzbTt4P6iRZNzhKgBIFAU3didomOzvG8Z+tt0K4j5dn29zWMAur32nlR0hCcOaMr2m76alcggIYAs33U/oRn40cRRlYRgQxO1M025aofQxyrqjQQTMXh1AFj79jfSEZvmg2VweaDffh1izuH6Z9xX1J8UtowBkYShzuQNghVG4jNch4KN9X3m8yn34u9TaTHgUDlvYaBvGuxLvq/oCUyU3LuhVnBpOka7eFDAAXisQygBaIXzzA4VW1yAbYjRGIstWaRO0UATFeARHLIEK4KqxFUZzy7NsSL8u+sXY2Al11Ns2v31IlQfcaCEVxPnRDOiu+QRrPJt5MBIcHW1T4K1HF0a4fzyCSUWgkEA4ynueKD3pc=
+    username: AgBoK9lbqUatoiCb0UQA67c6fnbo21Vga7cz85snaz4mqNokVv4iEq132uHDCp0cgibP/Gsfc67wGfBOlD8ApAjmwEomeYxdLKYsVvMcTbcRh6Y8BT++Ydez/EbAw/bNqWvwURjvQz08VNywfVPsE5CwQU/Voqjkx1+AaNHmRgsPlH0X/kR4W5CgiuedjfRCdZI65ZsrP4Hg44Cd8USnsVux4HOqYALFcDX/mcXRotYqzkMgU+DQeB1DajPrADBX4h/GxY36dW06Kz03kxorLpydSuvkGTeeZEuygpViz158Y2ToHhQPmT4RzW2IvPYsd2KDK+01GYDu/jsqrX/xJnXRCMGK4Dn/Pv/9xpWHtTnLeXymSBgITG/oU+Uu3YBFJkZkHswqbW2iTKM3qK/yVAVhZw+csP7yQ/Tg5cD4MH9fnpMdQh+BOHqK46LShmg0JuOGB1+UnAyjpAdAxgxfEumolYSALXDQMfFhtc9TgFjrUWqgpxdJxgGf+rzwL1X+OpZ1jK4GkBJfA/CL1Ds/ocyYCWAg7ig8+gJFLCcrXlk+Nk2SJt++85NpMHSA0pxrsKkjSdqPRRabNkNmrMnP9tATTLj+PiBAbretLEiFgDs22PvHwo5dBj3s/zuaMSpinLa/VbY+TO/1E6qWn4EVi9yP+B4v7TAsOeYrG1rcA8gE7+xN9sphIRQ/mrEDW8zi9e1pTL2qNqiCRX8omMw=
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: emqx-exporter
+      name: emqx-exporter-secret
+      namespace: emqx
+    type: Opaque
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: emqx-metrics
+  namespace: emqx
+  labels:
+    app: emqx-metrics
+spec:
+  selector:
+    matchLabels:
+      # the label is the same as the label of emqx pod
+      apps.emqx.io/instance: emqx
+      apps.emqx.io/managed-by: emqx-operator
+  podMetricsEndpoints:
+    # the name of emqx dashboard containerPort
+    - port: dashboard
+      basicAuth:
+        username:
+          name: emqx-exporter-secret
+          key: api_key
+        password:
+          name: emqx-exporter-secret
+          key: api_secret
+      interval: 5s
+      path: /api/v5/prometheus/stats
+      relabelings:
+        - action: replace
+          # user-defined cluster name, requires unique
+          replacement: emqx
+          targetLabel: cluster
+        - action: replace
+          # fix value, don't modify
+          replacement: emqx
+          targetLabel: from
+        - action: replace
+          # fix value, don't modify
+          sourceLabels: ['pod']
+          targetLabel: "instance"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emqx-exporter
+  namespace: emqx
+  labels:
+    app: emqx-exporter
+spec:
+  selector:
+    matchLabels:
+      app: emqx-exporter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: emqx-exporter
+    spec:
+      containers:
+        - name: exporter
+          image: emqx/emqx-exporter:0.2
+          ports:
+            - containerPort: 8085
+              name: metrics
+              protocol: TCP
+          args:
+            - --config.file
+            - /etc/emqx-exporter/config.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /etc/emqx-exporter
+      volumes:
+        - name: config
+          secret:
+            secretName: emqx-exporter-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emqx-exporter-service
+  namespace: emqx
+  labels:
+    app: emqx-exporter
+spec:
+  ports:
+    - name: metrics
+      port: 8085
+      targetPort: metrics
+  selector:
+    app: emqx-exporter
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: emqx-exporter
+  namespace: emqx
+  labels:
+    app: emqx-exporter
+spec:
+  selector:
+    matchLabels:
+      # the label is the same as the label of emqx-exporter svc
+      app: emqx-exporter
+  endpoints:
+    - port: metrics
+      path: /metrics
+      relabelings:
+        - action: replace
+          # user-defined cluster name, requires unique
+          replacement: emqx
+          targetLabel: cluster
+        - action: replace
+          # fix value, don't modify
+          replacement: exporter
+          targetLabel: from
+        - action: replace
+          # fix value, don't modify
+          sourceLabels: ['pod']
+          regex: '(.*)-.*-.*'
+          replacement: $1
+          targetLabel: "instance"
+        - action: labeldrop
+          # fix value, don't modify
+          regex: 'pod'
+    - port: metrics
+      # interval: 5s
+      path: /probe
+      params:
+        target:
+          - "emqx-listeners:1883"
+      relabelings:
+        - action: replace
+          # user-defined cluster name, requires unique
+          replacement: emqx
+          targetLabel: cluster
+        - action: replace
+          # fix value, don't modify
+          replacement: exporter
+          targetLabel: from
+        - action: replace
+          # fix value, don't modify
+          sourceLabels: ['pod']
+          regex: '(.*)-.*-.*'
+          replacement: $1
+          targetLabel: "instance"
+        - action: labeldrop
+          # fix value, don't modify
+          regex: 'pod'

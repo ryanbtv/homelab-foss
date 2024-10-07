@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: eqmx-sm
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/eqmx
+  selector:
+    matchLabels:
+      ryanb.tv/app: emqx
+  endpoints:
+  - port: dashboard
+    interval: 15s
+    path: /api/v5/prometheus/stats
