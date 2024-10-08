@@ -33,5 +33,5 @@ spec:
         group: longhorn.io
         kind: Node
         name: ".*"
-        version: v1beta2
+        version: v1beta1
         namespace: longhorn-system
