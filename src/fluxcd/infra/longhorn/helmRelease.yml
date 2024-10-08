@@ -31,7 +31,7 @@ spec:
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       v2DataEngine: 1
-      backupTarget: s3://backups@eastus2/longhorn
+      backupTarget: s3://backups@us-north/longhorn
       backupTargetCredentialSecret: minio-creds-longhorn-backups
     metrics:
       serviceMonitor:
@@ -41,13 +41,12 @@ spec:
         patches:
           - target:
               group: longhorn.io
+              version: v1beta2
               kind: Node
-              name: ".*"
-              version: v1beta1
-              namespace: longhorn-system
+              name: k8s01.prod
             patch: |
-              - op: replace
-                path: /spec/Disks
+              - op: add
+                path: /spec/disks
                 value:
                   data:
                     allowScheduling: true
