@@ -16,22 +16,4 @@ spec:
     kind: GitRepository
     name: homelab-foss
   prune: true
-  patches:
-    - patch: |
-        - op: replace
-          path: /spec/Disks
-          value:
-            data:
-              allowScheduling: true
-              diskDriver: auto
-              diskType: block
-              evictionRequested: false
-              path: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_pve-scsi1
-              storageReserved: 0
-              tags:
-      target:
-        group: longhorn.io
-        kind: Node
-        name: ".*"
-        version: v1beta1
-        namespace: longhorn-system
+

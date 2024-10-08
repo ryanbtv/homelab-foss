@@ -27,6 +27,7 @@ spec:
       jobEnabled: false
     defaultSettings:
       allowCollectingLonghornUsageMetrics: false
+      createDefaultDiskLabeledNodes: true # Disables auto-disk-provisioning since no nodes are labeled
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       v2DataEngine: 1
@@ -35,3 +36,24 @@ spec:
     metrics:
       serviceMonitor:
         enabled: false # Will be set later via patch
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: longhorn.io
+              kind: Node
+              name: ".*"
+              version: v1beta1
+              namespace: longhorn-system
+            patch: |
+              - op: replace
+                path: /spec/Disks
+                value:
+                  data:
+                    allowScheduling: true
+                    diskDriver: auto
+                    diskType: block
+                    evictionRequested: false
+                    path: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_pve-scsi1
+                    storageReserved: 0
+                    tags:
