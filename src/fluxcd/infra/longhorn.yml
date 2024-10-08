@@ -2,11 +2,31 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: longhorn-prerequisites
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: flux-namespaces
+  path: ./src/fluxcd/infra/longhorn-prerequisites
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: homelab-foss
+  prune: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: longhorn
   namespace: flux-system
 spec:
   dependsOn:
     - name: metallb # LoadBalancerIP
+    - name: longhorn-prerequisites
   path: ./src/fluxcd/infra/longhorn
   # Standard Params:
   interval: 1h
