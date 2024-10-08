@@ -17,3 +17,21 @@ spec:
     name: homelab-foss
   prune: true
 
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: longhorn-assets
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: longhorn
+  path: ./src/fluxcd/infra/longhorn-assets
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: homelab-foss
+  prune: true

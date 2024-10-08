@@ -36,23 +36,3 @@ spec:
     metrics:
       serviceMonitor:
         enabled: false # Will be set later via patch
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: longhorn.io
-              version: v1beta2
-              kind: Node
-              name: k8s01.prod
-            patch: |
-              - op: add
-                path: /spec/disks
-                value:
-                  data:
-                    allowScheduling: true
-                    diskDriver: auto
-                    diskType: block
-                    evictionRequested: false
-                    path: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_pve-scsi1
-                    storageReserved: 0
-                    tags:

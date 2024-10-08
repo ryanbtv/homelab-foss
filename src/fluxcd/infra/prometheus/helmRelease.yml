@@ -34,7 +34,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: longhorn-v2-data-engine
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -92,12 +92,12 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: longhorn-v2-data-engine
               accessModes:
                 - ReadWriteOnce
               resources:
                 requests:
-                  storage: 50Gi
+                  storage: 5Gi
       externalUrl: https://alertmanager.ryanb.tv
     grafana:
       replicas: 1
@@ -108,6 +108,6 @@ spec:
       persistence:
         type: pvc
         enabled: true
-        storageClassName: longhorn
+        storageClassName: longhorn-v2-data-engine
       adminUser: admin
       adminPassword: admin
