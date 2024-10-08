@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: netbox
+  namespace: netbox
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ipam.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: netbox
+          kind: Service
+          port: http
+  tls: {}

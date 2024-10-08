@@ -1,0 +1,94 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbox
+  namespace: netbox
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: netbox
+      version: 4.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: netbox
+        namespace: netbox
+      interval: 12h
+  values:
+    image:
+      repository: ghcr.io/slothcroissant/docker-netbox
+      tag: v3.7.5-2.8.0
+      pullPolicy: IfNotPresent
+    persistence: 
+      enabled: false
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host: netbox-postgresql
+      password: mypassword
+    redis:
+      enabled: false
+    tasksRedis:
+      host: netbox-redis-master
+      password: mypassword
+    cachingRedis:
+      host: netbox-redis-master
+      password: mypassword
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgresql
+  namespace: netbox
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: bitnami
+      version: 12.8.0
+      sourceRef:
+        kind: HelmRepository
+        name: netbox
+        namespace: netbox
+      interval: 12h
+  values:
+    fullnameOverride: netbox-postgresql
+    auth:
+      username: netbox
+      postgresPassword: mypassword
+      password: mypassword
+      database: netbox
+    primary:
+      persistence: 
+        enabled: true
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: redis
+  namespace: netbox
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: bitnami
+      version: 18.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: netbox
+        namespace: netbox
+      interval: 12h
+  values:
+    fullnameOverride: netbox-redis
+    auth:
+      password: mypassword
+    master:
+      persistence:
+        enabled: false
+    replica:
+      kind: DaemonSet
+      persistence:
+        enabled: false
