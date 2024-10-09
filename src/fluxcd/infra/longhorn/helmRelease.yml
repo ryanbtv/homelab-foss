@@ -25,6 +25,8 @@ spec:
         loadBalancerIP: 10.1.50.129
     preUpgradeChecker:
       jobEnabled: false
+    persistence:
+      defaultClass: false
     defaultSettings:
       allowCollectingLonghornUsageMetrics: false
       defaultDataLocality: best-effort

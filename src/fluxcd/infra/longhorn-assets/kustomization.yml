@@ -3,3 +3,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - https://raw.githubusercontent.com/longhorn/longhorn/v1.7.1/examples/v2/storageclass.yaml
+
+patches:
+  - target:
+      version: v1
+      group: storage.k8s.io
+      kind: StorageClass
+      name: longhorn-v2-data-engine
+      namespace: longhorn-system
+    patch: |-
+      - op: add 
+        path: /metadata/annotations/storageclass.kubernetes.io/is-default-class
+        value: "true"
