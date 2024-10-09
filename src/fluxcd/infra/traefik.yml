@@ -13,7 +13,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: homelab-foss
+    name: src-fluxcd-infra
   prune: true
 
 ---
@@ -34,7 +34,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: homelab-foss
+    name: src-fluxcd-infra
   prune: true
 
 ---
@@ -57,5 +57,5 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: homelab-foss
+    name: src-fluxcd-infra
   prune: true
