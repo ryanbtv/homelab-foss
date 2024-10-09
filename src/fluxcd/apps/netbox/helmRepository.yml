@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: netbox
-  namespace: netbox
 spec:
   interval: 24h
   url: https://charts.boo.tc
@@ -13,7 +12,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: bitnami
-  namespace: netbox
 spec:
   interval: 24h
   url: https://charts.bitnami.com/bitnami

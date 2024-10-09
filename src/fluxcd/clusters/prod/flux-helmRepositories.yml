@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: src-fluxcd-apps
+  name: flux-helmrepositories
   namespace: flux-system
 spec:
   interval: 5m0s
@@ -12,26 +12,23 @@ spec:
   ignore: |
     # exclude all
     /*
-    # include deploy dir
-    !/src/fluxcd/apps/*.yml
+    # include only helmRepository files:
+    !/src/fluxcd/**/helmRepository.yml
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-apps
+  name: flux-helmrepositories
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: flux-infra
-  - name: flux-namespaces
-  - name: flux-helmrepositories
+  path: ./src/fluxcd/
+  targetNamespace: flux-system
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: src-fluxcd-apps  
-  path: ./src/fluxcd/apps
+    name: flux-helmrepositories
   prune: true
-  wait: true

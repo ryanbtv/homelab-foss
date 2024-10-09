@@ -16,7 +16,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: longhorn
-        namespace: longhorn-system
+        namespace: flux-system
       interval: 12h
   values:
     service:
@@ -27,7 +27,6 @@ spec:
       jobEnabled: false
     defaultSettings:
       allowCollectingLonghornUsageMetrics: false
-      createDefaultDiskLabeledNodes: true # Disables auto-disk-provisioning since no nodes are labeled
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       v2DataEngine: 1

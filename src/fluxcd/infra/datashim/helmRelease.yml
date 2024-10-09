@@ -13,7 +13,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: datashim
-        namespace: datashim
+        namespace: flux-system
       interval: 12h
   install:
     createNamespace: true

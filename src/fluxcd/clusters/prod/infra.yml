@@ -14,6 +14,9 @@ spec:
     /*
     # include deploy dir
     !/src/fluxcd/infra/*.yml
+    # Exclude previously-deployed resources:
+    /src/fluxcd/**/namespaces.yml
+    /src/fluxcd/**/helmRepository.yml
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -24,6 +27,7 @@ metadata:
 spec:
   dependsOn:
   - name: flux-namespaces
+  - name: flux-helmrepositories
   interval: 1h
   retryInterval: 1m
   timeout: 5m
