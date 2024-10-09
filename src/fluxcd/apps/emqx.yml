@@ -13,7 +13,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: homelab-foss  
+    name: flux-resources
   prune: true
   path: ./src/fluxcd/apps/emqx
 
@@ -32,6 +32,6 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: homelab-foss  
+    name: flux-resources
   prune: true
   path: ./src/fluxcd/apps/emqx-assets

@@ -14,7 +14,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: src-fluxcd-infra
+    name: flux-resources
   prune: true
 
 ---
@@ -34,7 +34,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: src-fluxcd-infra
+    name: flux-resources
   prune: true
 
 ---
@@ -55,5 +55,5 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: src-fluxcd-infra
+    name: flux-resources
   prune: true
