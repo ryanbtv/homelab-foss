@@ -45,11 +45,11 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: bitnami
+      chart: postgresql
       version: 12.8.0
       sourceRef:
         kind: HelmRepository
-        name: netbox
+        name: bitnami
         namespace: flux-system
       interval: 12h
   values:
@@ -75,11 +75,11 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: bitnami
+      chart: redis
       version: 18.6.1
       sourceRef:
         kind: HelmRepository
-        name: netbox
+        name: bitnami
         namespace: flux-system
       interval: 12h
   values:
