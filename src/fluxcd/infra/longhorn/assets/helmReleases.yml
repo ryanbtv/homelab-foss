@@ -28,7 +28,7 @@ spec:
       allowCollectingLonghornUsageMetrics: false
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-      v2DataEngine: 1
+#      v2DataEngine: 1
       backupTarget: s3://backups@us-north/longhorn
       backupTargetCredentialSecret: minio-creds-longhorn-backups
       storageReservedPercentageForDefaultDisk: 10
