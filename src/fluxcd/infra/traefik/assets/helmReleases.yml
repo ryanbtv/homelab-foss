@@ -5,9 +5,6 @@ metadata:
   name: traefik
   namespace: traefik
 spec:
-  dependsOn:
-    - name: metallb-assets
-      namespace: metallb
   interval: 30m
   chart:
     spec:
