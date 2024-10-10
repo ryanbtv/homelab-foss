@@ -14,3 +14,13 @@ spec:
   resources:
     - kind: GitRepository
       name: flux-system
+    - kind: GitRepository
+      name: flux-namespaces
+    - kind: GitRepository
+      name: flux-helmrepositories
+    - kind: GitRepository
+      name: flux-kustomizations
+    - kind: GitRepository
+      name: flux-resources
+    - kind: GitRepository
+      name: homelab-foss
