@@ -10,5 +10,5 @@ spec:
     secret-name: "minio-creds-jellyfin-media" #Must be in same namespace (it's below)
     endpoint: "http://s3.ff.lan:9000"
     bucket: "media"
-    readonly: "false"
-    region: "eastus2"
+    readonly: "true"
+    region: "us-north"

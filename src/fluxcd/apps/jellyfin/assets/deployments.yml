@@ -16,8 +16,6 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: jellyfin
-        dataset.0.id: media # Datashim - must match datashim dataset name
-        dataset.0.useas: mount # Datashim
     spec:
 #      runtimeClassName: nvidia
       containers:
@@ -31,6 +29,8 @@ spec:
         volumeMounts:
           - name: jellyfin-config
             mountPath: /config
+          - name: media # Backed by datashim
+            mountPath: /nas
           - name: tmpfs
             mountPath: /transcode
         env:
@@ -53,6 +53,9 @@ spec:
       - name: jellyfin-config
         persistentVolumeClaim:
           claimName: jellyfin-pvc
+      - name: media # Backed by datashim
+        persistentVolumeClaim:
+          claimName: media # Name must match datashim name
       - name: tmpfs
         emptyDir:
           medium: Memory
