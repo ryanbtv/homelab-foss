@@ -1,0 +1,34 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: flux-helmrepositories
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/ryanbtv/homelab-foss
+  ref:
+    branch: main
+  ignore: |
+    # exclude all
+    /*
+    # include only helmRepositories files:
+    !/src/fluxcd/**/helmRepositories.yml
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-helmrepositories
+  namespace: flux-system
+spec:
+  path: ./src/fluxcd/
+  targetNamespace: flux-system
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-helmrepositories
+  prune: true

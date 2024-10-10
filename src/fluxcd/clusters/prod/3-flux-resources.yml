@@ -1,0 +1,22 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: flux-resources
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/ryanbtv/homelab-foss
+  ref:
+    branch: main
+  ignore: |
+    # exclude all
+    /*
+    # Include Apps & Infra all-up
+    !/src/fluxcd/apps
+    !/src/fluxcd/infra
+
+    Exclude already-handled resources
+    /src/fluxcd/**/namespaces.yml
+    /src/fluxcd/**/helmRepositories.yml
+    /src/fluxcd/**/flux-kustomizations.yml

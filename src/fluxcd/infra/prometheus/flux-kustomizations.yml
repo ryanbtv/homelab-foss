@@ -2,11 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: traefik-crds
+  name: prometheus-hooks-pre
   namespace: flux-system
 spec:
   dependsOn: []
-  path: ./src/fluxcd/infra/traefik-crds
+  path: ./src/fluxcd/infra/prometheus/hooks-pre
+  targetNamespace: prometheus 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
@@ -20,37 +21,33 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: traefik
+  name: prometheus-assets
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik-crds
-    - name: metallb # LoadBalancerIP
-    - name: prometheus # LoadBalancerIP
-  path: ./src/fluxcd/infra/traefik
-  # Standard Params:
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  sourceRef:
-    kind: GitRepository
-    name: flux-resources
-  prune: true
-
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: traefik-assets
-  namespace: flux-system
-spec:
-  dependsOn:
-    - name: traefik
     - name: prometheus
-    - name: sealed-secrets
-    - name: cert-manager-assets
-  path: ./src/fluxcd/infra/traefik-assets
-  targetNamespace: traefik 
+  path: ./src/fluxcd/infra/prometheus/assets
+  targetNamespace: prometheus 
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: prometheus-hooks-post
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: prometheus
+  path: ./src/fluxcd/infra/prometheus/prometheus/hooks-post
+  targetNamespace: prometheus 
   # Standard Params:
   interval: 1h
   retryInterval: 1m

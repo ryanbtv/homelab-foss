@@ -2,13 +2,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: datashim
+  name: flux-webhook-receiver
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets # CloudFlare API Token
-  path: ./src/fluxcd/infra/datashim
-  targetNamespace: datashim 
+    - name: sealed-secrets
+  path: ./src/fluxcd/infra/flux-webhook-receiver/assets
+  targetNamespace: flux-system 
   # Standard Params:
   interval: 1h
   retryInterval: 1m

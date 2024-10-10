@@ -2,19 +2,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cloudflared
+  name: datashim
   namespace: flux-system
 spec:
   dependsOn:
     - name: sealed-secrets # CloudFlare API Token
-    - name: prometheus # ServiceMonitors
-  path: ./src/fluxcd/infra/cloudflared
-  targetNamespace: cloudflared 
+  path: ./src/fluxcd/infra/datashim
+  targetNamespace: datashim 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-resources
+    name: flux-bases
   prune: true

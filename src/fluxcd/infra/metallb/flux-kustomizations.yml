@@ -2,11 +2,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: metallb
+  name: metallb-hooks-pre
   namespace: flux-system
 spec:
   dependsOn: []
-  path: ./src/fluxcd/infra/metallb
+  path: ./src/fluxcd/infra/metallb/hooks-pre
   targetNamespace: metallb 
   # Standard Params:
   interval: 1h
@@ -49,7 +49,27 @@ metadata:
 spec:
   dependsOn:
     - name: metallb
-  path: ./src/fluxcd/infra/metallb-assets
+  path: ./src/fluxcd/infra/metallb/assets
+  targetNamespace: metallb 
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: metallb-hooks-post
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: metallb
+  path: ./src/fluxcd/infra/metallb/metallb/hooks-post
   targetNamespace: metallb 
   # Standard Params:
   interval: 1h

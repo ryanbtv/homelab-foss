@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cert-manager-crds
+  name: traefik-hooks-pre
   namespace: flux-system
 spec:
   dependsOn: []
-  path: ./src/fluxcd/infra/cert-manager-crds
-  targetNamespace: cert-manager 
+  path: ./src/fluxcd/infra/traefik/hooks-pre
+  targetNamespace: traefik 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
@@ -21,13 +21,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cert-manager
+  name: traefik-assets
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cert-manager-crds
-  path: ./src/fluxcd/infra/cert-manager
-  targetNamespace: cert-manager 
+    - name: traefik
+  path: ./src/fluxcd/infra/traefik/assets
+  targetNamespace: traefik 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
@@ -41,14 +41,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cert-manager-assets
+  name: traefik-hooks-post
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cert-manager
-    - name: sealed-secrets
-  path: ./src/fluxcd/infra/cert-manager-assets
-  targetNamespace: cert-manager 
+    - name: traefik
+  path: ./src/fluxcd/infra/traefik/traefik/hooks-post
+  targetNamespace: traefik 
   # Standard Params:
   interval: 1h
   retryInterval: 1m

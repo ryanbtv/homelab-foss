@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: flux-helmrepositories
+  name: flux-kustomizations
   namespace: flux-system
 spec:
   interval: 5m0s
@@ -12,14 +12,14 @@ spec:
   ignore: |
     # exclude all
     /*
-    # include only helmRepository files:
-    !/src/fluxcd/**/helmRepository.yml
+    # include only app/infra top-level flux-kustomizations.yml files:
+    !/src/fluxcd/**/flux-kustomizations.yml
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-helmrepositories
+  name: flux-kustomizations
   namespace: flux-system
 spec:
   path: ./src/fluxcd/
@@ -30,5 +30,5 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-helmrepositories
+    name: flux-kustomizations
   prune: true

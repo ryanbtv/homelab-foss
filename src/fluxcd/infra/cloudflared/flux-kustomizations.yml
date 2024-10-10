@@ -2,12 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: netbox
+  name: cloudflared
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik
-    - name: longhorn
+    - name: sealed-secrets # CloudFlare API Token
+    - name: prometheus # ServiceMonitors
+  path: ./src/fluxcd/infra/cloudflared/assets
+  targetNamespace: cloudflared 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -15,5 +18,3 @@ spec:
     kind: GitRepository
     name: flux-resources
   prune: true
-  path: ./src/fluxcd/apps/netbox
-

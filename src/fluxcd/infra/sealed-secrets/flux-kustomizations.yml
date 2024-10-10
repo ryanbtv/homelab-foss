@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: longhorn-prerequisites
+  name: sealed-secrets-hooks-pre
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: flux-namespaces
-  path: ./src/fluxcd/infra/longhorn-prerequisites
+  dependsOn: []
+  path: ./src/fluxcd/infra/sealed-secrets/hooks-pre
+  targetNamespace: sealed-secrets 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
@@ -21,13 +21,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: longhorn
+  name: sealed-secrets-assets
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb # LoadBalancerIP
-    - name: longhorn-prerequisites
-  path: ./src/fluxcd/infra/longhorn
+    - name: sealed-secrets
+  path: ./src/fluxcd/infra/sealed-secrets/assets
+  targetNamespace: sealed-secrets 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
@@ -41,12 +41,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: longhorn-assets
+  name: sealed-secrets-hooks-post
   namespace: flux-system
 spec:
   dependsOn:
-    - name: longhorn
-  path: ./src/fluxcd/infra/longhorn-assets
+    - name: sealed-secrets
+  path: ./src/fluxcd/infra/sealed-secrets/sealed-secrets/hooks-post
+  targetNamespace: sealed-secrets 
   # Standard Params:
   interval: 1h
   retryInterval: 1m
