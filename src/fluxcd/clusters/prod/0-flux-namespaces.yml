@@ -22,7 +22,7 @@ metadata:
   name: flux-namespaces
   namespace: flux-system
 spec:
-  path: ./src/fluxcd/infra/
+  path: ./src/fluxcd/
   # Standard Params:
   interval: 1h
   retryInterval: 1m
