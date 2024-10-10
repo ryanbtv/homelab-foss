@@ -32,7 +32,6 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn-v2-data-engine
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -90,7 +89,6 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn-v2-data-engine
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -106,6 +104,5 @@ spec:
       persistence:
         type: pvc
         enabled: true
-        storageClassName: longhorn-v2-data-engine
       adminUser: admin
       adminPassword: admin
