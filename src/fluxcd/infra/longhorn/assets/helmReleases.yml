@@ -31,6 +31,7 @@ spec:
       v2DataEngine: 1
       backupTarget: s3://backups@us-north/longhorn
       backupTargetCredentialSecret: minio-creds-longhorn-backups
+      storageReservedPercentageForDefaultDisk: 10
     metrics:
       serviceMonitor:
         enabled: false # Will be set later via patch
