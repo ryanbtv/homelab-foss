@@ -17,7 +17,7 @@ spec:
       labels:
         app.kubernetes.io/name: jellyfin
     spec:
-#      runtimeClassName: nvidia
+      runtimeClassName: nvidia
       containers:
       - name: jellyfin
         image: docker.io/jellyfin/jellyfin
@@ -42,9 +42,9 @@ spec:
             port: http-jellyfin
           initialDelaySeconds: 300
           periodSeconds: 10
-#        resources:
-#          limits:
-#            nvidia.com/gpu: 1
+        resources:
+          limits:
+            nvidia.com/gpu: 1
       volumes:
       - name: jellyfin-config
         persistentVolumeClaim:
