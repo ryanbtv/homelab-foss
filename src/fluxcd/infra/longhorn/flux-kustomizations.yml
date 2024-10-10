@@ -25,7 +25,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb # LoadBalancerIP
+    - name: metallb-assets # LoadBalancerIP
     - name: longhorn-hooks-pre
   path: ./src/fluxcd/infra/longhorn/assets
   # Standard Params:

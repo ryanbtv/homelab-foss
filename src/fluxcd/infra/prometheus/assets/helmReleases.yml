@@ -6,7 +6,7 @@ metadata:
   namespace: prometheus
 spec:
   dependsOn:
-    - name: prometheus-crds
+    - name: prometheus-hooks-pre
   interval: 30m
   chart:
     spec:

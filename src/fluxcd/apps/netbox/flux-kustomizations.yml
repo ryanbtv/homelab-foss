@@ -6,8 +6,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik
-    - name: longhorn
+    - name: traefik-assets
+    - name: longhorn-assets
   interval: 1h
   retryInterval: 1m
   timeout: 5m

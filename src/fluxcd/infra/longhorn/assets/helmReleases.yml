@@ -6,7 +6,7 @@ metadata:
   namespace: longhorn-system
 spec:
   dependsOn:
-    - name: metallb
+    - name: metallb-assets
       namespace: metallb
   interval: 30m
   chart:

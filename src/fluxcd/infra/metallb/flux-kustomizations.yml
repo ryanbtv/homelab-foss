@@ -48,7 +48,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb
+    - name: metallb-hooks-pre
   path: ./src/fluxcd/infra/metallb/assets
   targetNamespace: metallb 
   # Standard Params:
@@ -68,7 +68,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb
+    - name: metallb-assets
   path: ./src/fluxcd/infra/metallb/metallb/hooks-post
   targetNamespace: metallb 
   # Standard Params:

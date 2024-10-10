@@ -6,8 +6,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets # CloudFlare API Token
-    - name: prometheus # ServiceMonitors
+    - name: sealed-secrets-assets # CloudFlare API Token
+    - name: prometheus-assets # ServiceMonitors
   path: ./src/fluxcd/infra/cloudflared/assets
   targetNamespace: cloudflared 
   # Standard Params:

@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets
+    - name: sealed-secrets-assets
   path: ./src/fluxcd/infra/flux-webhook-receiver/assets
   targetNamespace: flux-system 
   # Standard Params:

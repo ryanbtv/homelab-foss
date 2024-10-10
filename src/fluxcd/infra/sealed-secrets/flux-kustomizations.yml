@@ -25,7 +25,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets
+    - name: sealed-secrets-hooks-pre
   path: ./src/fluxcd/infra/sealed-secrets/assets
   targetNamespace: sealed-secrets 
   # Standard Params:
@@ -45,7 +45,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets
+    - name: sealed-secrets-assets
   path: ./src/fluxcd/infra/sealed-secrets/sealed-secrets/hooks-post
   targetNamespace: sealed-secrets 
   # Standard Params:

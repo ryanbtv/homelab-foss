@@ -25,7 +25,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: prometheus
+    - name: prometheus-hooks-pre
   path: ./src/fluxcd/infra/prometheus/assets
   targetNamespace: prometheus 
   # Standard Params:
@@ -45,8 +45,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: prometheus
-  path: ./src/fluxcd/infra/prometheus/prometheus/hooks-post
+    - name: prometheus-assets
+  path: ./src/fluxcd/infra/prometheus/hooks-post
   targetNamespace: prometheus 
   # Standard Params:
   interval: 1h

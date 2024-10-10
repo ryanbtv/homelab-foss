@@ -25,7 +25,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: node-feature-discovery
+    - name: node-feature-discovery-hooks-pre
   path: ./src/fluxcd/infra/node-feature-discovery/assets
   targetNamespace: node-feature-discovery 
   # Standard Params:
@@ -45,8 +45,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: node-feature-discovery
-  path: ./src/fluxcd/infra/node-feature-discovery/node-feature-discovery/hooks-post
+    - name: node-feature-discovery-assets
+  path: ./src/fluxcd/infra/node-feature-discovery/hooks-post
   targetNamespace: node-feature-discovery 
   # Standard Params:
   interval: 1h

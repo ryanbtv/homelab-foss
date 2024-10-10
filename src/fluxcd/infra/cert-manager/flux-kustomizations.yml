@@ -14,7 +14,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-app-assets
+    name: flux-resources
   prune: true
 
 ---
@@ -45,8 +45,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cert-manager
-    - name: sealed-secrets
+    - name: cert-manager-assets
+    - name: sealed-secrets-assets
   path: ./src/fluxcd/infra/cert-manager/hooks-post
   targetNamespace: cert-manager 
   # Standard Params:

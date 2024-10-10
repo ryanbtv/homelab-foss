@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: sealed-secrets # CloudFlare API Token
+    - name: sealed-secrets-assets # CloudFlare API Token
   path: ./src/fluxcd/infra/datashim
   targetNamespace: datashim 
   # Standard Params:
@@ -15,5 +15,5 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-bases
+    name: flux-resources
   prune: true

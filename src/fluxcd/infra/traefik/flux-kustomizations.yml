@@ -25,7 +25,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik
+    - name: traefik-hooks-pre
   path: ./src/fluxcd/infra/traefik/assets
   targetNamespace: traefik 
   # Standard Params:
@@ -45,8 +45,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik
-  path: ./src/fluxcd/infra/traefik/traefik/hooks-post
+    - name: traefik-assets
+  path: ./src/fluxcd/infra/traefik/hooks-post
   targetNamespace: traefik 
   # Standard Params:
   interval: 1h
