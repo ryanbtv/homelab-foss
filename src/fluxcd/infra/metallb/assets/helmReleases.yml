@@ -26,4 +26,4 @@ spec:
       frr:
         enabled: true
     crds:
-      enabled: true
+      enabled: false
