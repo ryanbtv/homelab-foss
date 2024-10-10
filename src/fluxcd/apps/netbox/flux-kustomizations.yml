@@ -6,7 +6,7 @@
 #   namespace: flux-system
 # spec:
 #   dependsOn: []
-#   path: ./src/fluxcd/infra/netbox/hooks-pre
+#   path: ./src/fluxcd/apps/netbox/hooks-pre
 #   targetNamespace: netbox 
 #   # Standard Params:
 #   interval: 1h
@@ -27,7 +27,7 @@ spec:
   dependsOn:
     - name: traefik-assets
     - name: longhorn-assets
-  path: ./src/fluxcd/infra/netbox/assets
+  path: ./src/fluxcd/apps/netbox/assets
   targetNamespace: netbox
   # Standard Params:
   interval: 1h
@@ -48,7 +48,7 @@ spec:
   dependsOn:
     - name: netbox-assets
     - name: sealed-secrets-assets
-  path: ./src/fluxcd/infra/netbox/hooks-post
+  path: ./src/fluxcd/apps/netbox/hooks-post
   targetNamespace: netbox 
   # Standard Params:
   interval: 1h
