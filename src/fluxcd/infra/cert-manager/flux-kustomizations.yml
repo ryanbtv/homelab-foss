@@ -48,7 +48,7 @@ spec:
     - name: cert-manager-assets
     - name: sealed-secrets-assets
   path: ./src/fluxcd/infra/cert-manager/hooks-post
-  targetNamespace: cert-manager 
+  #targetNamespace: cert-manager # we specify namespaces manually, since certs must be in the default namespace, but everything else in the main cert-manager ns
   # Standard Params:
   interval: 1h
   retryInterval: 1m
