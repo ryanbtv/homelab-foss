@@ -2,12 +2,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: emqx-assets
+  name: codeprojectai-assets
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb-assets
-    - name: sealed-secrets-assets
+    - name: node-feature-discovery-hooks-post # nvidia
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -15,18 +14,19 @@ spec:
     kind: GitRepository
     name: flux-resources
   prune: true
-  path: ./src/fluxcd/apps/emqx/assets
+  path: ./src/fluxcd/apps/codeprojectai/assets
+  targetNamespace: codeprojectai 
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: emqx-hooks-post
+  name: codeprojectai-hooks-post
   namespace: flux-system
 spec:
   dependsOn:
-    - name: emqx-assets
-    - name: prometheus-assets
+    - name: codeprojectai-assets
+    - name: traefik-hooks-post # IngressRoute
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -34,4 +34,5 @@ spec:
     kind: GitRepository
     name: flux-resources
   prune: true
-  path: ./src/fluxcd/apps/emqx/hooks-post
+  path: ./src/fluxcd/apps/codeprojectai/hooks-post
+  targetNamespace: codeprojectai 

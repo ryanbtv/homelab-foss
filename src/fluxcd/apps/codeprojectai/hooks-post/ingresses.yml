@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: codeprojectai
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ai.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: codeprojectai
+          kind: Service
+          port: http
+  tls: {}

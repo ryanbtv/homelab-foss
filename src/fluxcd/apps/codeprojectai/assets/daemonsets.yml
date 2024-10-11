@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: codeprojectai
+  namespace: codeprojectai
+  labels:
+    app.kubernetes.io/name: codeprojectai
+spec:
+  revisionHistoryLimit: 0 
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: codeprojectai
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: codeprojectai
+    spec:
+      runtimeClassName: nvidia
+      containers:
+      - name: codeprojectai
+        image: codeproject/ai-server:cuda12_2
+        ports:
+          - containerPort: 32168
+            name: http
+            protocol: TCP
+        args:
+          - --Modules:ObjectDetectionYolo:GpuOptions:EnableGPU=true # Enables GPU for the YOLO PyTorch module
+          - --Modules:FaceProcessing:LaunchSettings:AutoStart=false # Disable default FaceProcessing module
+          - --Modules:ObjectDetectionNet:LaunchSettings:AutoStart=false # Disable defualt YOLO NET module
+        securityContext:
+          privileged: true
+        resources:
+          limits:
+            nvidia.com/gpu: 1

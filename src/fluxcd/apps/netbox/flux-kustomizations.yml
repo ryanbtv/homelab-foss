@@ -1,22 +1,3 @@
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: netbox-hooks-pre
-#   namespace: flux-system
-# spec:
-#   dependsOn: []
-#   path: ./src/fluxcd/apps/netbox/hooks-pre
-#   targetNamespace: netbox 
-#   # Standard Params:
-#   interval: 1h
-#   retryInterval: 1m
-#   timeout: 5m
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-resources
-#   prune: true
-
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -25,11 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: traefik-assets
-    - name: longhorn-assets
-  path: ./src/fluxcd/apps/netbox/assets
-  targetNamespace: netbox
-  # Standard Params:
+    - name: longhorn-assets # PersistentVolume
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -37,24 +14,25 @@ spec:
     kind: GitRepository
     name: flux-resources
   prune: true
+  path: ./src/fluxcd/apps/netbox/assets
+  targetNamespace: netbox 
 
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: netbox-hooks-post
-#   namespace: flux-system
-# spec:
-#   dependsOn:
-#     - name: netbox-assets
-#     - name: sealed-secrets-assets
-#   path: ./src/fluxcd/apps/netbox/hooks-post
-#   targetNamespace: netbox 
-#   # Standard Params:
-#   interval: 1h
-#   retryInterval: 1m
-#   timeout: 5m
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-resources
-#   prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: netbox-hooks-post
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: netbox-assets
+    - name: traefik-hooks-post # IngressRoute
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+  path: ./src/fluxcd/apps/netbox/hooks-post
+  targetNamespace: netbox 

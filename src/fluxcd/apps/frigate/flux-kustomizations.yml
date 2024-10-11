@@ -1,0 +1,19 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: frigate
+  namespace: frigate
+spec:
+  dependsOn:
+    - name: datashim # minio-media
+    - name: sealed-secrets-assets # minio-creds
+    - name: traefik-assets # ingressRoutes
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+  path: ./src/fluxcd/apps/frigate

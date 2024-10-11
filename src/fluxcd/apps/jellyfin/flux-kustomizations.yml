@@ -2,12 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: jellyfin
+  name: jellyfin-hooks-pre
   namespace: flux-system
 spec:
   dependsOn:
     - name: datashim # minio-media
     - name: sealed-secrets-assets # minio-creds
+  path: ./src/fluxcd/apps/jellyfin/hooks-pre
+  targetNamespace: jellyfin 
+  # Standard Params:
   interval: 1h
   retryInterval: 1m
   timeout: 5m
@@ -15,4 +18,46 @@ spec:
     kind: GitRepository
     name: flux-resources
   prune: true
-  path: ./src/fluxcd/apps/jellyfin
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: jellyfin-assets
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: jellyfin-hooks-pre
+    - name: longhorn-assets # PersistentVolumeClaim
+    - name: node-feature-discovery-hooks-post # nvidia
+  path: ./src/fluxcd/apps/jellyfin/assets
+  targetNamespace: jellyfin
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: jellyfin-hooks-post
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: jellyfin-assets
+    - name: traefik-hooks-post # IngressRoute
+  path: ./src/fluxcd/apps/jellyfin/hooks-post
+  targetNamespace: jellyfin
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
