@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: datashim # minio-media
+    - name: s3-csi # minio-media
     - name: sealed-secrets-assets # minio-creds
   path: ./src/fluxcd/apps/jellyfin/hooks-pre
   targetNamespace: jellyfin 

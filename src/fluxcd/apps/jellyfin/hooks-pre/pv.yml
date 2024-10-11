@@ -1,0 +1,51 @@
+---
+# Config Dir Longhorn PVC:
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jellyfin-pvc
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: "longhorn"
+
+---
+# Media S3 PV: 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-pv
+spec:
+  capacity:
+    storage: 1000Gi # Ignored, required
+  accessModes:
+    - ReadOnlyMany # Supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  claimRef: # To ensure no other PVCs can claim this PV
+    namespace: jellyfin # Namespace is required even though it's in "default" namespace.
+    name: jellyfin-media-pvc # Name of your PVC
+  mountOptions:
+    - endpoint-url http://s3.ff.lan:9000
+    - region us-north
+  csi:
+    driver: s3.csi.aws.com # Required
+    volumeHandle: jellyfin-media-pv
+    volumeAttributes:
+      bucketName: media
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-media-pvc
+spec:
+  accessModes:
+    - ReadOnlyMany # Supported options: ReadWriteMany / ReadOnlyMany
+  storageClassName: "" # Required for static provisioning
+  resources:
+    requests:
+      storage: 1000Gi # Ignored, required
+  volumeName: jellyfin-media-pv # Name of your PV

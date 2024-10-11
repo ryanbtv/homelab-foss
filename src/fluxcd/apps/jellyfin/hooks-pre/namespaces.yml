@@ -5,4 +5,3 @@ metadata:
   name: jellyfin
   labels:
     pod-security.kubernetes.io/enforce: privileged
-    monitor-pods-datasets: enabled # For Datashim access https://github.com/datashim-io/datashim/blob/master/docs/index.md#post-install-steps

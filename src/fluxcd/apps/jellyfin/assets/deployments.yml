@@ -19,13 +19,26 @@ spec:
     spec:
       runtimeClassName: nvidia
       containers:
-      - name: jellyfin
-        image: docker.io/jellyfin/jellyfin
-        imagePullPolicy: Always
+      - name: rsync
+        image: axiom/rsync-server:latest
+        env:
+          - name: USERNAME
+            value: admin
+          - name: PASSWORD
+            value: password
+          - name: VOLUME
+            value: /config
         ports:
-          - containerPort: 8096
-            name: http-jellyfin
+          - containerPort: 873
+            name: rsync
             protocol: TCP
+#      - name: jellyfin
+#        image: docker.io/jellyfin/jellyfin
+#        imagePullPolicy: Always
+#        ports:
+#          - containerPort: 8096
+#            name: http-jellyfin
+#            protocol: TCP
         volumeMounts:
           - name: jellyfin-config
             mountPath: /config
@@ -33,15 +46,15 @@ spec:
             mountPath: /nas
           - name: tmpfs
             mountPath: /transcode
-        env:
-        - name: TZ
-          value: "America/Chicago"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http-jellyfin
-          initialDelaySeconds: 300
-          periodSeconds: 10
+#        env:
+#        - name: TZ
+#          value: "America/Chicago"
+#        livenessProbe:
+#          httpGet:
+#            path: /health
+#            port: http-jellyfin
+#          initialDelaySeconds: 300
+#          periodSeconds: 10
         resources:
           limits:
             nvidia.com/gpu: 1
@@ -49,9 +62,9 @@ spec:
       - name: jellyfin-config
         persistentVolumeClaim:
           claimName: jellyfin-pvc
-      - name: media # Backed by datashim
+      - name: media
         persistentVolumeClaim:
-          claimName: media # Name must match datashim name
+          claimName: jellyfin-media-pvc
       - name: tmpfs
         emptyDir:
           medium: Memory
