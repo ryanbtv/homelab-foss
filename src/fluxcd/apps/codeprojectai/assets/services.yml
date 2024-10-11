@@ -11,4 +11,4 @@ spec:
     port: 32168
     targetPort: http
   type: LoadBalancer
-  loadBalancerIP: 10.1.50.140
+  loadBalancerIP: 10.1.50.134
