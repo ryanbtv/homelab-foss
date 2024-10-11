@@ -1,0 +1,162 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam01
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam01.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam01
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam02
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam02.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam02
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam03
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam03.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam03
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam04
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam04.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam04
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam05
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam05.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam05
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam06
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam06.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam06
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam07
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam07.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam07
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam08
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam08.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam08
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam09
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam09.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam09
+          kind: Service
+          port: http
+  tls: {}
+
