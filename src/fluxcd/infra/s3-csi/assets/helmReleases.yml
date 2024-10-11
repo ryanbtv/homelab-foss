@@ -15,6 +15,3 @@ spec:
         name: s3-csi
         namespace: flux-system
       interval: 12h
-  values:
-    awsAccessSecret:
-      name: minio-s3-credentials
