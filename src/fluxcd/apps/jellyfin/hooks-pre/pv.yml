@@ -4,7 +4,6 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: jellyfin-pvc
-  namespace: jellyfin
 spec:
   accessModes:
     - ReadWriteOnce
@@ -23,10 +22,10 @@ spec:
   capacity:
     storage: 1000Gi # Ignored, required
   accessModes:
-    - ReadOnlyMany # Supported options: ReadWriteMany / ReadOnlyMany
+    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
   storageClassName: "" # Required for static provisioning
   claimRef: # To ensure no other PVCs can claim this PV
-    namespace: jellyfin # Namespace is required even though it's in "default" namespace.
+    namespace: kube-system # Namespace is required even though it's in "default" namespace.
     name: jellyfin-media-pvc # Name of your PVC
   mountOptions:
     - endpoint-url http://s3.ff.lan:9000

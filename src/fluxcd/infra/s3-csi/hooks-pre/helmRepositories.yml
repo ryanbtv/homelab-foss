@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: s3-csi
-  namespace: s3-csi
 spec:
   interval: 24h
   url: https://awslabs.github.io/mountpoint-s3-csi-driver
