@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-cam04
+  namespace: frigate
+  labels:
+    app.kubernetes.io/name: frigate-cam04
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frigate-cam04
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frigate-cam04
+        ryanb.tv/anti.affinity.label: frigate
+    spec:
+      runtimeClassName: nvidia
+      containers:
+      - name: frigate-cam04
+        image: ghcr.io/blakeblackshear/frigate:0.14.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1984
+          name: go2rtc
+          protocol: TCP
+        - containerPort: 5000
+          name: http
+          protocol: TCP
+        - containerPort: 8554
+          name: rtsp
+          protocol: TCP
+        - containerPort: 8555
+          name: webrtc
+          protocol: TCP
+        volumeMounts:
+        - name: frigate-config-dir
+          mountPath: /config
+        - name: frigate-cam04-cm
+          mountPath: /config/config.yml
+          subPath: config.yml
+        - mountPath: /media/frigate
+          name: frigate-recordings
+        - mountPath: /dev/shm
+          name: dshm
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: FRIGATE_RTSP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: frigate-secrets
+              key: FRIGATE_RTSP_PASSWORD
+        livenessProbe:
+          httpGet:
+            path: /api
+            port: 5000
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+      volumes:
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+        name: dshm
+      - name: frigate-cam04-cm
+        configMap:
+          name: frigate-cam04-cm
+      - name: frigate-config-dir
+        persistentVolumeClaim:
+          claimName: frigate-cam04-pvc
+      - name: frigate-recordings
+        persistentVolumeClaim:
+          claimName: frigate-cam04-recordings-pvc
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      # Spread pods across all hosts evenly
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: ryanb.tv/anti.affinity.label
+                  operator: In
+                  values:
+                  - frigate
+              topologyKey: "kubernetes.io/hostname"

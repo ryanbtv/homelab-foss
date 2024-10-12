@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-cam02
+  labels:
+    ryanb.tv/app: frigate
+spec:
+  selector:
+    app.kubernetes.io/name: frigate-cam02
+  ports:
+  - name: http
+    protocol: TCP
+    port: 5000
+    targetPort: http
+  - name: go2rtc
+    protocol: TCP
+    port: 1984
+    targetPort: go2rtc
+  - name: rtsp
+    protocol: TCP
+    port: 8554
+    targetPort: rtsp
+  - name: webrtc
+    protocol: TCP
+    port: 8555
+    targetPort: webrtc
+  - name: prometheus
+    protocol: TCP
+    port: 9100
+    targetPort: prometheus
+  type: LoadBalancer
+  loadBalancerIP: 10.1.50.142

@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frigate-cam01-cm
+  name: frigate-cam02-cm
   namespace: frigate
 data:
   config.yml: |
-    # yaml-language-server: $schema=http://cam01-nvr.ff.lan:5000/api/config/schema.json
+    # yaml-language-server: $schema=http://cam02-nvr.ff.lan:5000/api/config/schema.json
     mqtt:
       host: emqx-listeners.emqx.svc.cluster.local
       port: 1883
       stats_interval: 60
-      topic_prefix: cam01
-      client_id: cam01
+      topic_prefix: cam02
+      client_id: cam02
 
     database:
       path: /config/frigate.db
@@ -40,7 +40,7 @@ data:
       deepstack:
         api_url: http://codeprojectai.codeprojectai.svc.cluster.local:32168/v1/vision/custom/ipcam-combined
         type: deepstack
-        api_timeout: 0.5 # seconds
+        api_timeout: 1.0 # seconds
 
     snapshots:
       enabled: True
@@ -56,21 +56,21 @@ data:
 
     go2rtc:
       streams:
-        cam01:
-          - rtsp://admin:{FRIGATE_RTSP_PASSWORD}@10.1.30.11:554/cam/realmonitor?channel=1&subtype=0
-        cam01_sub:
-          - rtsp://admin:{FRIGATE_RTSP_PASSWORD}@10.1.30.11:554/cam/realmonitor?channel=1&subtype=1
+        cam02:
+          - rtsp://admin:{FRIGATE_RTSP_PASSWORD}@10.1.30.12:554/cam/realmonitor?channel=1&subtype=0
+        cam02_sub:
+          - rtsp://admin:{FRIGATE_RTSP_PASSWORD}@10.1.30.12:554/cam/realmonitor?channel=1&subtype=1
       webrtc:
         candidates:
-          - 10.1.50.141:8555
+          - 10.1.50.142:8555
       homekit:
-        cam01:  # same stream ID from streams list
+        cam02:  # same stream ID from streams list
 
     cameras:
-      cam01:
+      cam02:
         ffmpeg:
           inputs:
-            - path: rtsp://127.0.0.1:8554/cam01
+            - path: rtsp://127.0.0.1:8554/cam02
               input_args: preset-rtsp-restream-low-latency
               roles:
                 - record

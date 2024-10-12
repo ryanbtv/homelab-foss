@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frigate-cam09
+  namespace: frigate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cam09.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: frigate-cam09
+          kind: Service
+          port: http
+  tls: {}
