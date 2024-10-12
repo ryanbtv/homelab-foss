@@ -13,39 +13,45 @@ spec:
   storageClassName: "longhorn"
 
 ---
-# Media S3 PV: 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: jellyfin-media-pv
 spec:
   capacity:
-    storage: 1000Gi # Ignored, required
+    storage: 250Gi
+  volumeMode: Filesystem
   accessModes:
-    - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
-  storageClassName: "" # Required for static provisioning
+  - ReadWriteOnce
   claimRef: # To ensure no other PVCs can claim this PV
-    namespace: default # Namespace is required even though it's in "default" namespace.
     name: jellyfin-media-pvc # Name of your PVC
-  mountOptions:
-    - endpoint-url http://s3.ff.lan:9000
-    - region us-north
-    - force-path-style
-  csi:
-    driver: s3.csi.aws.com # Required
-    volumeHandle: jellyfin-media-pv
-    volumeAttributes:
-      bucketName: media
+    namespace: jellyfin
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/s3/media
+  nodeAffinity: # TODO: Map affinity to host mounts availability 
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k8s01.prod
+          - k8s02.prod
+          - k8s03.prod
+          - k8s04.prod
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-media-pvc
+  namespace: jellyfin
 spec:
   accessModes:
-    - ReadOnlyMany # Supported options: ReadWriteMany / ReadOnlyMany
-  storageClassName: "" # Required for static provisioning
+    - ReadOnlyMany # Supported options: ReadWriteMany / ReadWriteMany
+  storageClassName: local-storage
   resources:
     requests:
-      storage: 1000Gi # Ignored, required
+      storage: 250Gi # Ignored, required
   volumeName: jellyfin-media-pv # Name of your PV
