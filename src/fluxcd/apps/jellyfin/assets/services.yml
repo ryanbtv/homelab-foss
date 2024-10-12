@@ -13,4 +13,4 @@ spec:
     port: 8096
     targetPort: http-jellyfin
   type: LoadBalancer
-  loadBalancerIP: 10.1.50.135f
+  loadBalancerIP: 10.1.50.135
