@@ -25,11 +25,12 @@ spec:
     - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
   storageClassName: "" # Required for static provisioning
   claimRef: # To ensure no other PVCs can claim this PV
-    namespace: kube-system # Namespace is required even though it's in "default" namespace.
+    namespace: default # Namespace is required even though it's in "default" namespace.
     name: jellyfin-media-pvc # Name of your PVC
   mountOptions:
     - endpoint-url http://s3.ff.lan:9000
     - region us-north
+    - force-path-style
   csi:
     driver: s3.csi.aws.com # Required
     volumeHandle: jellyfin-media-pv
