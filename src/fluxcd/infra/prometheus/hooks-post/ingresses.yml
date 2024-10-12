@@ -11,7 +11,7 @@ spec:
     - match: Host(`prometheus.ryanb.tv`)
       kind: Rule
       services:
-        - name: kube-prometheus-stack-prometheus
+        - name: prometheus-kube-prometheus-prometheus
           kind: Service
           port: http-web
   tls: {}
@@ -29,7 +29,7 @@ spec:
     - match: Host(`alertmanager.ryanb.tv`)
       kind: Rule
       services:
-        - name: kube-prometheus-stack-alertmanager
+        - name: prometheus-kube-prometheus-alertmanager
           kind: Service
           port: http-web
   tls: {}
@@ -47,7 +47,7 @@ spec:
     - match: Host(`grafana.ryanb.tv`)
       kind: Rule
       services:
-        - name: kube-prometheus-stack-grafana
+        - name: prometheus-grafana
           kind: Service
           port: http-web
   tls: {}
