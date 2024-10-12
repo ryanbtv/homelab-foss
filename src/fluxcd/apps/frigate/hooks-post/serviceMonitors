@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: frigate-sm
+  namespace: frigate
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/frigate
+  selector:
+    matchLabels:
+      ryanb.tv/app: frigate
+  endpoints:
+  - port: prometheus
+    interval: 15s
