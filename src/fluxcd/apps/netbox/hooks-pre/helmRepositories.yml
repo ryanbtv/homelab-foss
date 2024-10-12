@@ -5,7 +5,7 @@ metadata:
   name: netbox
 spec:
   interval: 24h
-  url: https://charts.boo.tc
+  url: https://charts.netbox.oss.netboxlabs.com/
 
 ---
 apiVersion: source.toolkit.fluxcd.io/v1

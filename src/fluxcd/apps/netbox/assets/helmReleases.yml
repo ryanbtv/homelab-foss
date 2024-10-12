@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: netbox
-      version: 4.1.1
+      version: 5.0.0-beta.124
       sourceRef:
         kind: HelmRepository
         name: netbox
@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/slothcroissant/docker-netbox
-      tag: v3.7.5-2.8.0
+      tag: v4.1-3.0.2
       pullPolicy: IfNotPresent
     persistence: 
       enabled: false
@@ -47,7 +47,7 @@ spec:
   chart:
     spec:
       chart: postgresql
-      version: 12.8.0
+      version: 16.0.1
       sourceRef:
         kind: HelmRepository
         name: bitnami
@@ -78,7 +78,7 @@ spec:
   chart:
     spec:
       chart: redis
-      version: 18.6.1
+      version: 20.2.0
       sourceRef:
         kind: HelmRepository
         name: bitnami
