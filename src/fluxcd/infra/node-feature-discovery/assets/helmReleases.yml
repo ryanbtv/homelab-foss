@@ -23,6 +23,7 @@ spec:
       enabled: true
       topologyUpdater:
         enable: true
+        createCRDs: true
     gfd:
       enabled: true
     affinity:
