@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+  labels:
+    app.kubernetes.io/name: vaultwarden
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vaultwarden
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vaultwarden
+    spec:
+      containers:
+      - name: vaultwarden
+        image: docker.io/vaultwarden/server
+        ports:
+          - containerPort: 83
+            name: http
+            protocol: TCP
+          - containerPort: 3012
+            name: ws
+            protocol: TCP
+        volumeMounts:
+          - name: vaultwarden-data
+            mountPath: /data
+        env:
+        - name: SIGNUPS_ALLOWED
+          value: 'false'
+        - name: ROCKET_PORT
+          value: '83'
+      volumes:
+      - name: vaultwarden-data
+        persistentVolumeClaim:
+          claimName: vaultwarden-pvc

@@ -1,0 +1,13 @@
+---
+# Config Dir Longhorn PVC:
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: vaultwarden-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "longhorn"
