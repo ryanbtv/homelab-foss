@@ -52,7 +52,9 @@ spec:
       key: bearer # Key within the Secret to use
   metricsPath: /minio/v2/metrics/node
   staticConfigs:
-    - targets: ['s3.ff.lan:9000']
+    - targets: 
+      - 'minio1.ff.lan:9000'
+      - 'minio2.ff.lan:9000'
 
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
