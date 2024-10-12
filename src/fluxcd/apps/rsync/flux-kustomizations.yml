@@ -1,0 +1,36 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: rsync-hooks-pre
+  namespace: flux-system
+spec:
+  path: ./src/fluxcd/apps/rsync/hooks-pre
+  targetNamespace: rsync 
+  # Standard Params:
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: rsync-assets
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: rsync-hooks-pre
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-resources
+  prune: true
+  path: ./src/fluxcd/apps/rsync/assets
+  targetNamespace: rsync 

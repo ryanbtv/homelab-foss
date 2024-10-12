@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rsync-pv
+spec:
+  capacity:
+    storage: 250Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  claimRef: # To ensure no other PVCs can claim this PV
+    name: rsync-pvc # Name of your PVC
+    namespace: rsync
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/s3
+  nodeAffinity: # TODO: Map affinity to host mounts availability 
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k8s01.prod
+          - k8s02.prod
+          - k8s03.prod
+          - k8s04.prod
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-pvc
+  namespace: rsync
+spec:
+  accessModes:
+    - ReadOnlyMany # Supported options: ReadWriteMany / ReadWriteMany
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 250Gi # Ignored, required
+  volumeName: rsync-pv # Name of your PV
