@@ -25,7 +25,7 @@ spec:
   claimRef: # To ensure no other PVCs can claim this PV
     name: frigate-cam02-recordings-pvc # Name of your PVC
     namespace: frigate
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
     path: /mnt/s3/frigate-cam02

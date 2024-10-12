@@ -12,7 +12,7 @@ spec:
   claimRef: # To ensure no other PVCs can claim this PV
     name: rsync-pvc # Name of your PVC
     namespace: rsync
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
     path: /mnt/s3
