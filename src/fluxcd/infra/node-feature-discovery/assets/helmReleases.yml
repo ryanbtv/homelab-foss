@@ -21,6 +21,8 @@ spec:
       name: nvidia-device-plugin
     nfd:
       enabled: true
+      topologyUpdater:
+        enable: true
     gfd:
       enabled: true
     affinity:
