@@ -1,0 +1,56 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgres-operator
+  namespace: postgres-operator
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: postgres-operator
+      version: "1.13.0"
+      sourceRef:
+        kind: HelmRepository
+        name: postgres-operator
+        namespace: flux-system
+      interval: 12h
+  values:
+    configKubernetes:
+      # label assigned to Kubernetes objects created by the operator
+      cluster_name_label: postgres-cluster
+      enable_cross_namespace_secret: true
+      enable_finalizers: true
+      enable_persistent_volume_claim_deletion: false
+      enable_readiness_probe: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgres-operator-ui
+  namespace: postgres-operator
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: postgres-operator-ui
+      version: "1.13.0"
+      sourceRef:
+        kind: HelmRepository
+        name: postgres-operator-ui
+        namespace: flux-system
+      interval: 12h
+  values:
+    # configure UI ENVs
+    envs:
+      # IMPORTANT: While operator chart and UI chart are independent, this is the interface between
+      # UI and operator API. Insert the service name of the operator API here!
+      appUrl: "http://0.0.0.0:8081"
+      operatorApiUrl: "http://postgres-operator:8080"
+      operatorClusterNameLabel: "cluster-name"
+      resourcesVisible: "True"
+      # Set to "*" to allow viewing/creation of clusters in all namespaces
+      targetNamespace: "*"
+      # configure UI service
+    service:
+      type: "LoadBalancer"
