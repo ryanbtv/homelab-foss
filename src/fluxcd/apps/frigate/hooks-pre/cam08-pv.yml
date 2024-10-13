@@ -1,15 +1,45 @@
 ---
-kind: PersistentVolumeClaim
+# Volume pre-created in Longhorn
 apiVersion: v1
+kind: PersistentVolume
 metadata:
-  name: frigate-cam08-pvc
+  name: frigate-cam08
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: frigate-cam08
+    namespace: frigate
+  csi:
+    driver: driver.longhorn.io
+    fsType: xfs
+    volumeAttributes:
+      numberOfReplicas: '4'
+    volumeHandle: frigate-cam08
+  persistentVolumeReclaimPolicy: Retain
+  storageClaassName: longhorn-static
+  volumeMode: Filesystem
+
+---
+# PVC for Volume pre-created in Longhorn
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: frigate-cam08
   namespace: frigate
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: frigate-cam08
 
 ---
 apiVersion: v1

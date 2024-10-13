@@ -82,7 +82,7 @@ spec:
           name: frigate-cam06-cm
       - name: frigate-config-dir
         persistentVolumeClaim:
-          claimName: frigate-cam06-pvc
+          claimName: frigate-cam06
       - name: frigate-recordings
         persistentVolumeClaim:
           claimName: frigate-cam06-recordings-pvc
