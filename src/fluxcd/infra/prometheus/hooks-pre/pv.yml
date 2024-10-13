@@ -1,0 +1,86 @@
+---
+# Volume pre-created in Longhorn
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: prometheus
+    namespace: prometheus
+  csi:
+    driver: driver.longhorn.io
+    fsType: xfs
+    volumeAttributes:
+      numberOfReplicas: '4'
+    volumeHandle: prometheus
+  persistentVolumeReclaimPolicy: Retain
+  storageClaassName: longhorn-static
+  volumeMode: Filesystem
+
+---
+# PVC for Volume pre-created in Longhorn
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: prometheus
+
+---
+# Volume pre-created in Longhorn
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: grafana
+    namespace: grafana
+  csi:
+    driver: driver.longhorn.io
+    fsType: xfs
+    volumeAttributes:
+      numberOfReplicas: '4'
+    volumeHandle: grafana
+  persistentVolumeReclaimPolicy: Retain
+  storageClaassName: longhorn-static
+  volumeMode: Filesystem
+
+---
+# PVC for Volume pre-created in Longhorn
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: grafana
+
