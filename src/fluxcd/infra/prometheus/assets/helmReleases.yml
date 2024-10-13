@@ -21,6 +21,7 @@ spec:
         selector:
           component: kube-proxy
     prometheus:
+      enabled: true
       server:
         persistentVolumeClaim:
           existingClaim: prometheus
