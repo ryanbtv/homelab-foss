@@ -46,6 +46,7 @@ metadata:
 spec:
   dependsOn:
     - name: traefik-assets
+    - name: prometheus-assets
   path: ./src/fluxcd/infra/traefik/hooks-post
   targetNamespace: traefik 
   # Standard Params:
