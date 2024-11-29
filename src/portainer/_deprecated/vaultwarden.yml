@@ -1,0 +1,28 @@
+---
+services:
+  vaultwarden:
+    image: docker.io/vaultwarden/server
+    container_name: vaultwarden
+    environment:
+      - SIGNUPS_ALLOWED=false
+      - DOMAIN=https://vault.ff.lan
+    volumes:
+      - vaultwarden:/data
+    restart: always
+    labels:
+      - traefik.enable=true
+      # HTTPS
+      - traefik.http.routers.vaultwarden.rule=Host(`vw.ff.lan`)
+      - traefik.http.routers.vaultwarden.tls=true
+      - traefik.http.routers.vaultwarden.tls.certresolver=hcv
+    networks:
+      - main
+
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  vaultwarden:

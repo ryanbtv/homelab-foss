@@ -1,0 +1,25 @@
+---
+services:
+  app:
+    image: docker.io/nodered/node-red:4.0.5
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - nodered:/data
+      - /usr/local/share/ca-certificates/ff-lan-ca.crt:/ssl/ff-lan-ca.crt:ro
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nodered.rule=Host(`nr.ff.lan`)
+      - traefik.http.routers.nodered.tls=true
+      - traefik.http.services.nodered.loadbalancer.server.port=1880
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  nodered:

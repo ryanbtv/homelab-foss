@@ -1,0 +1,39 @@
+---
+services:
+  app:
+    image: docker.io/jellyfin/jellyfin:10.10.3
+    runtime: nvidia
+    user: 1000:1000
+    environment:
+    - TZ=America/Chicago
+    volumes:
+      - jellyfin:/config
+      - /hdd/media:/nas
+      - type: tmpfs
+        target: /cache
+        tmpfs:
+          size: "12884901888"
+    ports:
+      - 8096:8096
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`media.ff.lan`)
+      - traefik.http.routers.jellyfin.tls=true
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  jellyfin:

@@ -1,0 +1,53 @@
+---
+services:
+  app:
+    image: lscr.io/linuxserver/healthchecks:version-v3.7
+    environment:
+      - DB=postgres # Database Engine to use
+      - DB_HOST=healthchecks-db-1
+      - DB_PORT=5432
+      - DB_USER=healthchecks
+      - DB_PASSWORD=healthchecks
+      - DB_NAME=healthchecks
+      - SUPERUSER_EMAIL=ryan@ryanb.tv
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - SITE_ROOT=https://hc.ff.lan
+      - SITE_LOGO_URL=https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Linearicons_heart-pulse.svg/480px-Linearicons_heart-pulse.svg.png
+      - TZ=America/Chicago
+      - SITE_NAME=Healthchecks
+    restart: always
+    depends_on:
+    - db
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.healthchecks.rule=Host(`hc.ff.lan`)
+      - traefik.http.routers.healthchecks.tls=true
+      - traefik.http.routers.healthchecks.tls.certresolver=hcv
+      - traefik.http.services.healthchecks.loadbalancer.server.port=8000
+    networks:
+      - main
+
+  db:
+    image: postgres:16
+    environment:
+    - POSTGRES_USER=healthchecks
+    - POSTGRES_PASSWORD=healthchecks
+    volumes:
+      - healthchecks-db:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: /bin/sh -c exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432 || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  healthchecks-db:

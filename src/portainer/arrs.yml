@@ -1,0 +1,138 @@
+---
+services:
+  pgadmin:
+    image: dpage/pgadmin4:8.13.0
+
+    environment:
+    - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+    - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    - PGADMIN_DISABLE_POSTFIX=true
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.psql.rule=Host(`psql.ff.lan`)
+      - traefik.http.routers.psql.tls=true
+    networks:
+      - main
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:4.3.3
+    environment:
+    - TZ=America/Chicago
+    - PUID=1000
+    - PGID=1000
+    volumes:
+      - sabnzbd:/config
+      - /ssd/downloads:/downloads
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sabnzbd.rule=Host(`nzb.ff.lan`)
+      - traefik.http.routers.sabnzbd.tls=true
+    networks:
+      - main
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:4.0.11
+    depends_on:
+      - sonarr-db
+    environment:
+    - TZ=America/Chicago
+    - PUID=1000
+    - PGID=1000
+    volumes:
+      - sonarr:/config
+      - /ssd/downloads:/downloads
+      - /hdd/media:/media
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sonarr.rule=Host(`sonarr.ff.lan`)
+      - traefik.http.routers.sonarr.tls=true
+    networks:
+      - main
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:5.15.1
+    depends_on:
+      - radarr-db
+    environment:
+    - TZ=America/Chicago
+    - PUID=1000
+    - PGID=1000
+    volumes:
+      - radarr:/config
+      - /ssd/downloads:/downloads
+      - /hdd/media:/media
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.radarr.rule=Host(`radarr.ff.lan`)
+      - traefik.http.routers.radarr.tls=true
+    networks:
+      - main
+
+
+  sonarr-db:
+    image: postgres:14.15
+    user: 1000:1000
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - sonarr-db:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: /bin/sh -c exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432 || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    networks:
+      - main
+
+  radarr-db:
+    image: postgres:14.15
+    user: 1000:1000
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - radarr-db:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: /bin/sh -c exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432 || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    networks:
+      - main
+
+  prowlarr:
+    image: docker.io/hotio/prowlarr:release-1.27.0.4852
+    environment:
+    - TZ=America/Chicago
+    volumes:
+      - prowlarr:/config
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.ff.lan`)
+      - traefik.http.routers.prowlarr.tls=true
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  pgadmin:
+  sabnzbd:
+  sonarr:
+  radarr:
+  sonarr-db:
+  radarr-db:
+  prowlarr:

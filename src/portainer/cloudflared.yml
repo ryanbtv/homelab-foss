@@ -1,0 +1,18 @@
+---
+services:
+  app:
+    image: docker.io/cloudflare/cloudflared:2024.11.1
+    command: tunnel run
+    environment:
+    - TUNNEL_TOKEN=${TOKEN}
+    - TUNNEL_METRICS=0.0.0.0:9100
+    restart: always
+    labels:
+      - ff.hostname=cloudflared.ff.lan
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true

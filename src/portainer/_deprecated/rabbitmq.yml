@@ -1,0 +1,36 @@
+---
+services:
+  app:
+    image: rabbitmq:4-management
+    hostname: mqtt.ff.lan
+    command: "/bin/bash -c \"rabbitmq-plugins enable rabbitmq_mqtt; rabbitmq-server\""
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=mqtt
+      - RABBITMQ_DEFAULT_PASS=mqtt
+    ports:
+    # MQTT
+    - '1883:1883'
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping || exit 1
+      start_period: 90s
+      timeout: 5s
+      interval: 60s
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mqtt.rule=Host(`mqtt.ff.lan`)
+      - traefik.http.routers.mqtt.tls=true
+      - traefik.http.services.mqtt.loadbalancer.server.port=15672
+    networks:
+      - main
+
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  rabbitmq:

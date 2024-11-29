@@ -1,0 +1,47 @@
+---
+services:
+  app:
+    image: docker.io/prom/prometheus:v3.0.1
+    volumes:
+      - prometheus:/prometheus
+      - /nvme/docker/volumes/prometheus_prometheus/_data/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prometheus.rule=Host(`prom.ff.lan`)
+      - traefik.http.routers.prometheus.tls=true
+      - traefik.http.services.prometheus.loadbalancer.server.port=9090
+    networks:
+      - main
+
+  blackbox:
+    image: quay.io/prometheus/blackbox-exprter:v0.25.0
+    command:
+      - --config.file=/config/blackbox.yml
+    volumes:
+      - blackbox:/config
+    restart: always
+    networks:
+      - main
+
+  z2m_exporter:
+    image: docker.io/kpetrem/mqtt-exporter:1.4.7
+    environment:
+      - TZ=UTC
+      - MQTT_ADDRESS=mqtt-app-1
+      - MQTT_USERNAME=z2m_exporter
+      - MQTT_PASSWORD=z2m_exporter
+      - MQTT_TOPIC=zigbee2mqtt/+
+      - PROMETHEUS_PREFIX=z2m_
+    restart: always
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  prometheus:
+  blackbox:

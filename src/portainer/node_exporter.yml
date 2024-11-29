@@ -1,0 +1,11 @@
+---
+services:
+  app:
+    image: quay.io/prometheus/node-exporter:v1.8.2
+    volumes:
+      - '/:/host:ro,rslave'
+    command:
+      - '--path.rootfs=/host'
+    restart: always
+    pid: host
+    network_mode: host

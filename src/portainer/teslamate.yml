@@ -1,0 +1,74 @@
+services:
+  app:
+    image: docker.io/teslamate/teslamate:1.32
+    restart: always
+    healthcheck:
+      test: "nc -z localhost 4000"
+      interval: 15s
+      timeout: 2s
+      start_period: 60s
+    environment:
+      - ENCRYPTION_KEY=teslamate #replace with a secure key to encrypt your Tesla API tokens
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=secret #insert your secure database password!
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-db-1
+      - MQTT_HOST=rabbitmq-app-1
+      - MQTT_USERNAME=teslamate
+      - MQTT_PASSWORD=teslamate
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tesla.rule=Host(`tesla.ff.lan`)
+      - traefik.http.routers.tesla.tls=true
+    networks:
+      - main
+
+  db:
+    image: postgres:17.2
+    restart: always
+    volumes:
+      - teslamate-db:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -q -t 2 -d $$POSTGRES_DB -U $$POSTGRES_USER
+      start_period: 20s
+      timeout: 30s
+      interval: 10s
+      retries: 5
+    environment:
+      - POSTGRES_USER=teslamate
+      - POSTGRES_PASSWORD=secret #insert your secure database password!
+      - POSTGRES_DB=teslamate
+    networks:
+      - main
+
+  grafana:
+    image: teslamate/grafana:1.32
+    restart: always
+    healthcheck:
+      test: curl http://localhost:3000/api/health || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    environment:
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=secret #insert your secure database password!
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=teslamate-db-1
+    volumes:
+      - teslamate-grafana:/var/lib/grafana
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.ff.lan`)
+      - traefik.http.routers.grafana.tls=true
+    networks:
+      - main
+
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  teslamate-db:
+  teslamate-grafana:

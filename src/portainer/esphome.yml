@@ -1,0 +1,24 @@
+---
+services:
+  app:
+    image: ghcr.io/esphome/esphome:2024.11
+    volumes:
+      - esphome:/config
+    restart: always
+    environment:
+      - ESPHOME_DASHBOARD_USE_PING=true
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homebridge.rule=Host(`esp.ff.lan`)
+      - traefik.http.routers.homebridge.tls=true
+      - traefik.http.services.homebridge.loadbalancer.server.port=6052
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  esphome:

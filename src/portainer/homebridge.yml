@@ -1,0 +1,11 @@
+---
+services:
+  app:
+    image: docker.io/homebridge/homebridge:2024-10-25
+    volumes:
+      - homebridge:/homebridge
+    restart: always
+    network_mode: host
+
+volumes:
+  homebridge:

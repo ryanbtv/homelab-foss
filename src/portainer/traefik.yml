@@ -1,0 +1,63 @@
+---
+services:
+  traefik:
+    image: traefik:v3.2
+    volumes:
+      - traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/pve/local/pveproxy-ssl.pem:/ssl/ssl.crt:ro
+      - /etc/pve/local/pveproxy-ssl.key:/ssl/ssl.key:ro
+    ports:
+      - 80:80
+      - 443:443
+    command:
+      - "--global.checknewversion=false"
+      - "--global.sendanonymoususage=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.websecure.forwardedHeaders.insecure=true"
+      - "--log.level=DEBUG"
+      - "--log.filePath=/etc/traefik/traefik.log"
+      - "--log.format=json"
+      - "--accessLog.filePath=/etc/traefik/access.log"
+      - "--accessLog.format=json"
+      - "--api=true"
+      - "--api.dashboard=true"
+      - "--ping.entryPoint=websecure"
+      - "--ping.manualRouting=true"
+      - "--providers.docker.defaultRule=Host(`{{ normalize .Name }}.ff.lan`)"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.allowEmptyServices=true"
+      - "--providers.file.directory=/etc/traefik"
+      - "--serversTransport.insecureSkipVerify=true"
+    restart: always
+    labels:
+      - traefik.enable=true
+      # Ping
+      - traefik.http.routers.ping.rule=Host(`traefik.ff.lan`) && Path(`/ping`)
+      - traefik.http.routers.ping.tls=true
+      - traefik.http.routers.ping.service=ping@internal
+      # Dashboard && API
+      - traefik.http.routers.dashboard.rule=Host(`traefik.ff.lan`) && !Path(`/ping`)
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.service=api@internal
+    healthcheck:
+      test: wget -qO- --no-check-certificate https://traefik.ff.lan/ping || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    networks:
+      - main
+
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  traefik:

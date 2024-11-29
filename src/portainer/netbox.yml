@@ -1,0 +1,140 @@
+services:
+  app: &netbox
+    image: ghcr.io/slothcroissant/docker-netbox:v4.1-3.0.2
+    depends_on:
+      - db
+      - redis
+      - redis-cache
+    healthcheck:
+      test: curl -f http://localhost:8080/login/ || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    environment:
+      - DB_HOST=netbox-db-1
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_PASSWORD=secret
+      - DB_WAIT_DEBUG=1
+      - ALLOWED_HOSTS = ['*']
+
+      - REDIS_CACHE_DATABASE=1
+      - REDIS_CACHE_HOST=netbox-redis-cache-1
+      - REDIS_CACHE_INSECURE_SKIP_TLS_VERIFY=false
+      - REDIS_CACHE_PASSWORD=mypassword
+      - REDIS_CACHE_SSL=false
+      - REDIS_DATABASE=0
+      - REDIS_HOST=netbox-redis-1
+      - REDIS_INSECURE_SKIP_TLS_VERIFY=false
+      - REDIS_PASSWORD=mypassword
+      - SECRET_KEY=pfYhXD6OZubCpuud7VKxmuRNuQEffWj11RrwNawJ47Vhkr5fFi
+    labels:
+      - traefik.enable=true
+      # HTTPS
+      - traefik.http.routers.netbox.rule=Host(`ipam.ff.lan`)
+      - traefik.http.routers.netbox.tls=true
+      - traefik.http.routers.netbox.service=netbox
+      - traefik.http.services.netbox.loadbalancer.server.port=8080
+
+    networks:
+      - main
+
+  app-worker:
+    <<: *netbox
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /opt/netbox/venv/bin/python
+      - /opt/netbox/netbox/manage.py
+      - rqworker
+    healthcheck:
+      test: ps -aux | grep -v grep | grep -q rqworker || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+    labels:
+      - traefik.enable=false
+    networks:
+      - main
+
+  app-housekeeping:
+    <<: *netbox
+    depends_on:
+      app:
+        condition: service_healthy
+    command:
+      - /opt/netbox/housekeeping.sh
+    healthcheck:
+      test: ps -aux | grep -v grep | grep -q housekeeping || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+    labels:
+      - traefik.enable=false
+    networks:
+      - main
+
+  db:
+    image: postgres:16
+    restart: always
+    healthcheck:
+      test: pg_isready -q -t 2 -d $$POSTGRES_DB -U $$POSTGRES_USER
+      start_period: 20s
+      timeout: 30s
+      interval: 10s
+      retries: 5
+    environment:
+      - POSTGRES_USER=netbox
+      - POSTGRES_PASSWORD=secret #insert your secure database password!
+      - POSTGRES_DB=netbox
+    volumes:
+      - netbox-db:/var/lib/postgresql/data
+    labels:
+      - traefik.enable=false
+    networks:
+      - main
+
+  redis:
+    image: docker.io/valkey/valkey:8.0-alpine
+    command:
+      - sh
+      - -c # this is to evaluate the $REDIS_PASSWORD from the env
+      - valkey-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+    healthcheck: &redis-healthcheck
+      test: '[ $$(valkey-cli --pass "$${REDIS_PASSWORD}" ping) = ''PONG'' ]'
+      start_period: 5s
+      timeout: 3s
+      interval: 1s
+      retries: 5
+    environment:
+      - REDIS_PASSWORD=mypassword
+    volumes:
+      - netbox-redis:/data
+    networks:
+      - main
+
+  redis-cache:
+    image: docker.io/valkey/valkey:8.0-alpine
+    command:
+      - sh
+      - -c # this is to evaluate the $REDIS_PASSWORD from the env
+      - valkey-server --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+    healthcheck: *redis-healthcheck
+    environment:
+      - REDIS_PASSWORD=mypassword
+    volumes:
+      - netbox-redis-cache:/data
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  netbox-db:
+  netbox-redis:
+  netbox-redis-cache:
+  

@@ -1,0 +1,22 @@
+---
+services:
+  app:
+    image: docker.io/actualbudget/actual-server:24.11.0
+    volumes:
+      - budget:/data
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.budget.rule=Host(`budget.ff.lan`)
+      - traefik.http.routers.budget.tls=true
+      - traefik.http.services.budget.loadbalancer.server.port=5006
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  budget:

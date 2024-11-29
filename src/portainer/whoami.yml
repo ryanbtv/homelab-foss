@@ -1,0 +1,16 @@
+---
+services:
+  app:
+    # A container that exposes an API to show its IP address
+    image: traefik/whoami:v1.10
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.ff.lan`)
+      - traefik.http.routers.whoami.tls=true
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true

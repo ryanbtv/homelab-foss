@@ -1,0 +1,25 @@
+---
+services:
+  app:
+    image: docker.io/sigoden/dufs:v0.43.0
+    environment:
+      - DUFS_CONFIG=/config/config.yml
+    volumes:
+      - books:/config
+      - /hdd/media/books:/dufs
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.books.rule=Host(`books.ff.lan`)
+      - traefik.http.routers.books.tls=true
+      - traefik.http.services.books.loadbalancer.server.port=5000
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  books:

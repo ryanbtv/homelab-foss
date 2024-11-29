@@ -1,0 +1,27 @@
+services:
+  dockerio:
+    image: registry:2
+    ports:
+      - 5000:5000
+    environment:
+      - REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io
+  quayio:
+    image: registry:2
+    ports:
+      - 5001:5000
+    environment:
+      - REGISTRY_PROXY_REMOTEURL=https://quay.io
+  ghcrio:
+    image: registry:2
+    ports:
+      - 5002:5000
+    environment:
+      - REGISTRY_PROXY_REMOTEURL=https://ghcr.io
+
+
+REGISTRY_STORAGE: s3
+REGISTRY_STORAGE_S3_ACCESSKEY: mystring
+REGISTRY_STORAGE_S3_SECRETKEY: mystring
+REGISTRY_STORAGE_S3_BUCKET: mystring
+REGISTRY_STORAGE_S3_REGION: mystring
+REGISTRY_HEALTH_STORAGEDRIVER_ENABLED: false

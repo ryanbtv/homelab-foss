@@ -1,0 +1,45 @@
+---
+services:
+  app:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - hass:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: always
+    privileged: true
+    ports:
+    - 8123:8123
+    - 21065:21065
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hass.rule=Host(`hass.ff.lan`)
+      - traefik.http.routers.hass.tls=true
+      - traefik.http.services.hass.loadbalancer.server.port=8123
+    networks:
+      - main
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=hass
+      - POSTGRES_PASSWORD=hass
+      - POSTGRES_DB=hass
+    volumes:
+      - hass-db:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: /bin/sh -c exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432 || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  hass:
+  hass-db:

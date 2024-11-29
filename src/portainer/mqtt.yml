@@ -1,0 +1,32 @@
+---
+services:
+  app:
+    image: emqx/emqx:5.8.2
+    hostname: mqtt.ff.lan
+    volumes:
+      - emqx:/opt/emqx/data
+    ports:
+    # MQTT
+    - '1883:1883'
+    restart: always
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      start_period: 90s
+      timeout: 5s
+      interval: 60s
+      retries: 5
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mqtt.rule=Host(`mqtt.ff.lan`)
+      - traefik.http.routers.mqtt.tls=true
+      - traefik.http.services.mqtt.loadbalancer.server.port=18083
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
+
+volumes:
+  emqx:
