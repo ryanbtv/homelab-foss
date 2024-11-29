@@ -29,7 +29,7 @@ services:
       - main
 
   db:
-    image: postgres:16
+    image: postgres:16.6
     environment:
     - POSTGRES_USER=healthchecks
     - POSTGRES_PASSWORD=healthchecks
