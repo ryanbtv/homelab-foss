@@ -15,7 +15,7 @@ services:
       - main
 
   blackbox:
-    image: quay.io/prometheus/blackbox-exprter:v0.25.0
+    image: docker.io/prom/blackbox-exporter:v0.25.0
     command:
       - --config.file=/config/blackbox.yml
     volumes:
