@@ -35,7 +35,7 @@ services:
   prometheus_exporter:
     image: docker.io/rhysbailey/prometheus-frigate-exporter:0.1.1
     environment:
-    - FRIGATE_STATS_URL=https://nvr.ff.lan/api/stats
+    - FRIGATE_STATS_URL=http://docker.ff.lan:5000/api/stats
     restart: always
     networks:
       - main
