@@ -32,6 +32,18 @@ services:
       - traefik.http.routers.frigate.tls=true
       - traefik.http.services.frigate.loadbalancer.server.port=5000
 
+  prometheus_exporter:
+    image: docker.io/rhysbailey/prometheus-frigate-exporter:0.1.1
+    environment:
+    - FRIGATE_STATS_URL=https://nvr.ff.lan/api/stats
+    restart: always
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
 
 volumes:
   frigate:
