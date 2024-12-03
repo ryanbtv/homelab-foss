@@ -17,12 +17,16 @@ services:
       - MYSQL_USER=librenms
       - MYSQL_PASSWORD=librenms
     restart: always
+    networks:
+      - main
 
   redis:
     image: redis:7.2-alpine
     environment:
       - TZ=America/Chicago
     restart: always
+    networks:
+      - main
 
   app:
     image: librenms/librenms:24.11.0
@@ -35,21 +39,13 @@ services:
     volumes:
       - librenms:/data
     environment:
-      - TZ=America/Chicago
-      - PUID=1000
-      - PGID=1000
       - DB_HOST=librenms-db-1
       - DB_NAME=librenms
       - DB_USER=librenms
       - DB_PASSWORD=librenms
       - DB_TIMEOUT=60
-      - MEMORY_LIMIT=256M
       - MAX_INPUT_VARS=1000
-      - UPLOAD_MAX_SIZE=16M
-      - OPCACHE_MEM_SIZE=128
       - REAL_IP_FROM=0.0.0.0/0
-      - REAL_IP_HEADER=X-Forwarded-For
-      - LOG_IP_VAR=remote_addr
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=redis
       - REDIS_HOST=librenms-redis-1
@@ -61,6 +57,8 @@ services:
       - traefik.http.routers.nms.rule=Host(`nms.ff.lan`)
       - traefik.http.routers.nms.tls=true
       - traefik.http.services.nms.loadbalancer.server.port=8000
+    networks:
+      - main
 
   dispatcher:
     image: librenms/librenms:24.11.0
@@ -73,9 +71,6 @@ services:
     volumes:
       - librenms:/data
     environment:
-      - TZ=America/Chicago
-      - PUID=1000
-      - PGID=1000
       - DB_HOST=librenms-db-1
       - DB_NAME=librenms
       - DB_USER=librenms
@@ -83,19 +78,16 @@ services:
       - DB_TIMEOUT=60
       - DISPATCHER_NODE_ID=dispatcher1
       - SIDECAR_DISPATCHER=1
-      - MEMORY_LIMIT=256M
       - MAX_INPUT_VARS=1000
-      - UPLOAD_MAX_SIZE=16M
-      - OPCACHE_MEM_SIZE=128
       - REAL_IP_FROM=0.0.0.0/0
-      - REAL_IP_HEADER=X-Forwarded-For
-      - LOG_IP_VAR=remote_addr
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=redis
       - REDIS_HOST=librenms-redis-1
       - LIBRENMS_SNMP_COMMUNITY=nms
       - LIBRENMS_WEATHERMAP=false
     restart: always
+    networks:
+      - main
 
   syslogng:
     image: librenms/librenms:24.11.0
@@ -115,28 +107,22 @@ services:
     volumes:
       - librenms:/data
     environment:
-      - TZ=America/Chicago
-      - PUID=1000
-      - PGID=1000
       - DB_HOST=librenms-db-1
       - DB_NAME=librenms
       - DB_USER=librenms
       - DB_PASSWORD=librenms
       - DB_TIMEOUT=60
       - SIDECAR_SYSLOGNG=1
-      - MEMORY_LIMIT=256M
       - MAX_INPUT_VARS=1000
-      - UPLOAD_MAX_SIZE=16M
-      - OPCACHE_MEM_SIZE=128
       - REAL_IP_FROM=0.0.0.0/0
-      - REAL_IP_HEADER=X-Forwarded-For
-      - LOG_IP_VAR=remote_addr
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=redis
       - REDIS_HOST=librenms-redis-1
       - LIBRENMS_SNMP_COMMUNITY=nms
       - LIBRENMS_WEATHERMAP=false
     restart: always
+    networks:
+      - main
 
   snmptrapd:
     image: librenms/librenms:24.11.0
@@ -156,28 +142,27 @@ services:
     volumes:
       - librenms:/data
     environment:
-      - TZ=America/Chicago
-      - PUID=1000
-      - PGID=1000
       - DB_HOST=librenms-db-1
       - DB_NAME=librenms
       - DB_USER=librenms
       - DB_PASSWORD=librenms
       - DB_TIMEOUT=60
       - SIDECAR_SNMPTRAPD=1
-      - MEMORY_LIMIT=256M
       - MAX_INPUT_VARS=1000
-      - UPLOAD_MAX_SIZE=16M
-      - OPCACHE_MEM_SIZE=128
       - REAL_IP_FROM=0.0.0.0/0
-      - REAL_IP_HEADER=X-Forwarded-For
-      - LOG_IP_VAR=remote_addr
       - CACHE_DRIVER=redis
       - SESSION_DRIVER=redis
       - REDIS_HOST=librenms-redis-1
       - LIBRENMS_SNMP_COMMUNITY=nms
       - LIBRENMS_WEATHERMAP=false
     restart: always
+    networks:
+      - main
+
+networks:
+  main:
+    name: main
+    external: true
 
 volumes:
   librenms:
