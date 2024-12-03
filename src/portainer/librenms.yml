@@ -29,10 +29,6 @@ services:
     cap_add:
       - NET_ADMIN
       - NET_RAW
-    ports:
-      - target: 8000
-        published: 8000
-        protocol: tcp
     depends_on:
       - db
       - redis
@@ -60,6 +56,11 @@ services:
       - LIBRENMS_SNMP_COMMUNITY=nms
       - LIBRENMS_WEATHERMAP=false
     restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nms.rule=Host(`nms.ff.lan`)
+      - traefik.http.routers.nms.tls=true
+      - traefik.http.services.nms.loadbalancer.server.port=8000
 
   dispatcher:
     image: librenms/librenms:24.11.0
