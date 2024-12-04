@@ -5,8 +5,9 @@ services:
     hostname: mqtt.ff.lan
     volumes:
       - emqx:/opt/emqx/data
+    environment:
+      - "EMQX_NODE_NAME=emqx@mqtt.ff.lan"
     ports:
-    # MQTT
     - '1883:1883'
     restart: always
     healthcheck:
