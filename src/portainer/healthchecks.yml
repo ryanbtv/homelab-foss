@@ -9,6 +9,7 @@ services:
       - DB_USER=healthchecks
       - DB_PASSWORD=healthchecks
       - DB_NAME=healthchecks
+      - DEBUG=False # Enables Production Mode
       - SUPERUSER_EMAIL=ryan@ryanb.tv
       - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
