@@ -30,11 +30,7 @@ services:
       - main
 
   db:
-    image: postgres:16.6
-    environment:
-    - POSTGRES_USER=healthchecks
-    - POSTGRES_PASSWORD=healthchecks
-    volumes:
+    image: docker.io/library/postgres:16.6
       - healthchecks-db:/var/lib/postgresql/data
     restart: always
     healthcheck:

@@ -12,10 +12,10 @@ services:
     - PLUS_API_KEY=${PLUS_API_KEY}
     volumes:
       # Passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
-      - /dev/apex_0:/dev/apex_0 
-      - /dev/apex_1:/dev/apex_1 
+#      - /dev/apex_0:/dev/apex_0 
+#      - /dev/apex_1:/dev/apex_1 
       - frigate:/config
-      - /ssd/frigate:/media/frigate
+      - /mnt/pve/nvr:/media/frigate
       - /etc/localtime:/etc/localtime:ro
     network_mode: host
     restart: always

@@ -19,12 +19,7 @@ services:
     networks:
       - main
   db:
-    image: postgres:16
-    environment:
-      - POSTGRES_USER=hass
-      - POSTGRES_PASSWORD=hass
-      - POSTGRES_DB=hass
-    volumes:
+    image: docker.io/library/postgres:16
       - hass-db:/var/lib/postgresql/data
     restart: always
     healthcheck:

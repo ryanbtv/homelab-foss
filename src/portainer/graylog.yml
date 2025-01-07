@@ -1,7 +1,7 @@
 ---
 services:
   db:
-    image: "mongo:6.0.18"
+    image: docker.io/library/mongo:6.0.18
     hostname: graylog-db
     ports:
       - "27017:27017"   
@@ -13,7 +13,7 @@ services:
       - "graylog-db-config:/data/configdb"  
 
   datanode:
-    image: "graylog/graylog-datanode:6.1"
+    image: docker.io/graylog/graylog-datanode:6.1
     hostname: graylog-datanode
     environment:
       GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
@@ -39,7 +39,7 @@ services:
 
   # Graylog: https://hub.docker.com/r/graylog/graylog/
   app:
-    image: "graylog/graylog:6.1"
+    image: docker.io/graylog/graylog:6.1
     hostname: graylog-app
     depends_on:
       db:

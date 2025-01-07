@@ -1,14 +1,7 @@
 ---
 services:
   db:
-    image: mariadb:10
-    command:
-      - mysqld
-      - --innodb-file-per-table=1
-      - --lower-case-table-names=0
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    volumes:
+    image: docker.io/library/mariadb:10
       - librenms_db:/var/lib/mysql
     environment:
       - MARIADB_RANDOM_ROOT_PASSWORD=yes
@@ -20,13 +13,8 @@ services:
       - main
 
   redis:
-    image: redis:7.2-alpine
-    restart: always
-    networks:
-      - main
-
-  app:
-    image: librenms/librenms:24.11.0
+    image: docker.io/library/redis:7.2-alpine
+    image: docker.io/librenms/librenms:24.11.0
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -58,7 +46,7 @@ services:
       - main
 
   dispatcher:
-    image: librenms/librenms:24.11.0
+    image: docker.io/librenms/librenms:24.11.0
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -87,7 +75,7 @@ services:
       - main
 
   syslogng:
-    image: librenms/librenms:24.11.0
+    image: docker.io/librenms/librenms:24.11.0
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -122,7 +110,7 @@ services:
       - main
 
   snmptrapd:
-    image: librenms/librenms:24.11.0
+    image: docker.io/librenms/librenms:24.11.0
     cap_add:
       - NET_ADMIN
       - NET_RAW

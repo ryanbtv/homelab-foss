@@ -1,7 +1,7 @@
 ---
 services:
   pgadmin:
-    image: dpage/pgadmin4:8.13.0
+    image: docker.io/dpage/pgadmin4:8.13.0
 
     environment:
     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
@@ -25,7 +25,7 @@ services:
     - PGID=1000
     volumes:
       - sabnzbd:/config
-      - /ssd/downloads:/downloads
+      - downloads:/downloads
     restart: always
     labels:
       - traefik.enable=true
@@ -44,8 +44,8 @@ services:
     - PGID=1000
     volumes:
       - sonarr:/config
-      - /ssd/downloads:/downloads
-      - /hdd/media:/media
+      - downloads:/downloads
+      - /mnt/hdd/media:/media
     restart: always
     labels:
       - traefik.enable=true
@@ -64,8 +64,8 @@ services:
     - PGID=1000
     volumes:
       - radarr:/config
-      - /ssd/downloads:/downloads
-      - /hdd/media:/media
+      - downloads:/downloads
+      - /mnt/hdd/media:/media
     restart: always
     labels:
       - traefik.enable=true
@@ -76,7 +76,7 @@ services:
 
 
   sonarr-db:
-    image: postgres:14.15
+    image: docker.io/library/postgres:14.15
     user: 1000:1000
     environment:
     - POSTGRES_USER=postgres
@@ -93,7 +93,7 @@ services:
       - main
 
   radarr-db:
-    image: postgres:14.15
+    image: docker.io/library/postgres:14.15
     user: 1000:1000
     environment:
     - POSTGRES_USER=postgres
@@ -136,3 +136,4 @@ volumes:
   sonarr-db:
   radarr-db:
   prowlarr:
+  downloads:

@@ -1,8 +1,7 @@
 ---
 services:
   app:
-    image: rabbitmq:4-management
-    hostname: mqtt.ff.lan
+    image: docker.io/library/rabbitmq:4-management
     command: "/bin/bash -c \"rabbitmq-plugins enable rabbitmq_mqtt; rabbitmq-server\""
     volumes:
       - rabbitmq:/var/lib/rabbitmq

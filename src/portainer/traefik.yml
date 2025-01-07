@@ -1,7 +1,7 @@
 ---
 services:
   traefik:
-    image: traefik:v3.2
+    image: docker.io/library/traefik:v3.2
     volumes:
       - traefik:/etc/traefik
       - /var/run/docker.sock:/var/run/docker.sock:ro
