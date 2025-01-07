@@ -6,7 +6,7 @@ metadata:
   namespace: metallb
 spec:
   addresses:
-  - 10.1.50.0/27
+  - 10.1.50.128/27
 
 ---
 apiVersion: metallb.io/v1beta1
