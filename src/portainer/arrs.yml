@@ -77,7 +77,6 @@ services:
 
   sonarr-db:
     image: docker.io/library/postgres:14.15
-    user: 1000:1000
     environment:
     - POSTGRES_USER=postgres
     - POSTGRES_PASSWORD=mypassword
@@ -94,7 +93,6 @@ services:
 
   radarr-db:
     image: docker.io/library/postgres:14.15
-    user: 1000:1000
     environment:
     - POSTGRES_USER=postgres
     - POSTGRES_PASSWORD=mypassword
