@@ -45,7 +45,7 @@ services:
     volumes:
       - sonarr:/config
       - downloads:/downloads
-      - /mnt/hdd/media:/media
+      - /mnt/pve/media:/media
     restart: always
     labels:
       - traefik.enable=true
@@ -65,7 +65,7 @@ services:
     volumes:
       - radarr:/config
       - downloads:/downloads
-      - /mnt/hdd/media:/media
+      - /mnt/pve/media:/media
     restart: always
     labels:
       - traefik.enable=true

@@ -8,7 +8,7 @@ services:
     - TZ=America/Chicago
     volumes:
       - jellyfin:/config
-      - /mnt/hdd/media:/nas
+      - /mnt/pve/media:/nas
       - type: tmpfs
         target: /cache
         tmpfs:

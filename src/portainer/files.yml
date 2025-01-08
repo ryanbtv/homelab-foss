@@ -6,7 +6,7 @@ services:
       - DUFS_CONFIG=/config/config.yml
     volumes:
       - files:/config
-      - /mnt/hdd/media/dufs:/dufs
+      - /mnt/pve/media/dufs:/dufs
     restart: always
     labels:
       - traefik.enable=true
