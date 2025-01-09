@@ -4,6 +4,8 @@ kind: IPAddressPool
 metadata:
   name: services-pool
   namespace: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   addresses:
   - 10.1.50.0/27
@@ -14,6 +16,8 @@ kind: BGPAdvertisement
 metadata:
   name: services-advertisement
   namespace: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   aggregationLength: 27
   ipAddressPools:
@@ -25,6 +29,8 @@ kind: BFDProfile
 metadata:
   name: bfdprofile
   namespace: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   detectMultiplier: 3
   echoMode: false
@@ -35,6 +41,8 @@ kind: BGPPeer
 metadata:
   name: icr01.ff.lan
   namespace: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   myASN: 65101
   peerASN: 65001
