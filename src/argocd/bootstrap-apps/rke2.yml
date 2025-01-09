@@ -1,17 +1,18 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: rke2
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
-  source:
-    path: src/argocd/bootstrap-resources/argocd
-    repoURL: https://github.com/ryanbtv/homelab-foss.git
-    targetRevision: main
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/rke2
+      targetRevision: main
   destination:
-    namespace: argocd
+    namespace: kube-system
     server: 'https://kubernetes.default.svc'
   project: default
   syncPolicy:
