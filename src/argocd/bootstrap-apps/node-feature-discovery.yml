@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: node-feature-discovery
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/node-feature-discovery
+      targetRevision: main
+    - repoURL: https://nvidia.github.io/k8s-device-plugin
+      chart: nvidia-device-plugin
+      targetRevision: v0.17.0
+      helm:
+        releaseName: nvidia-device-plugin
+        valuesObject:
+          runtimeClassName: nvidia
+          config:
+            name: nvidia-device-plugin
+          nfd:
+            enabled: true
+          gfd:
+            enabled: true
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  # On discrete-GPU based systems NFD adds the following label where 10de is the NVIDIA PCI vendor ID
+                  - key: feature.node.kubernetes.io/pci-10de.present
+                    operator: In
+                    values:
+                    - "true"
+                - matchExpressions:
+                  # On some Tegra-based systems NFD detects the CPU vendor ID as NVIDIA
+                  - key: feature.node.kubernetes.io/cpu-model.vendor_id
+                    operator: In
+                    values:
+                    - "NVIDIA"
+                - matchExpressions:
+                  # We allow a GPU deployment to be forced by setting the following label to "true"
+                  - key: "nvidia.com/gpu.present"
+                    operator: In
+                    values:
+                    - "true"
+
+  destination:
+    namespace: node-feature-discovery
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        maxDuration: 3m0s
+        factor: 2
+    syncOptions:
+      - CreateNamespace=true

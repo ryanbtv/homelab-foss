@@ -11,6 +11,12 @@ spec:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
       path: src/argocd/bootstrap-resources/rke2
       targetRevision: main
+    - repoURL: https://democratic-csi.github.io/charts
+      chart: snapshot-controller
+      targetRevision: 0.2.4
+      helm:
+        releaseName: snapshot-controller
+
   destination:
     namespace: kube-system
     server: 'https://kubernetes.default.svc'
