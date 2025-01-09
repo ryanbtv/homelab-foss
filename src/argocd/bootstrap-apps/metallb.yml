@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: metallb
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   source:
-    path: src/argocd/bootstrap-resources/argocd
+    path: src/argocd/bootstrap-resources/metallb
     repoURL: https://github.com/ryanbtv/homelab-foss.git
     targetRevision: main
   destination:
-    namespace: argocd
+    namespace: metallb
     server: 'https://kubernetes.default.svc'
   project: default
   syncPolicy:

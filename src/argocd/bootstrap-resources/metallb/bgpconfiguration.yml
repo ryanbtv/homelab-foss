@@ -1,0 +1,42 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: services-pool
+  namespace: metallb
+spec:
+  addresses:
+  - 10.1.50.0/27
+
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: services-advertisement
+  namespace: metallb
+spec:
+  aggregationLength: 27
+  ipAddressPools:
+  - services-pool
+
+---
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: bfdprofile
+  namespace: metallb
+spec:
+  detectMultiplier: 3
+  echoMode: false
+
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: icr01.ff.lan
+  namespace: metallb
+spec:
+  myASN: 65101
+  peerASN: 65001
+  peerAddress: 10.1.40.1
+  bfdProfile: bfdprofile
