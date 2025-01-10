@@ -2,14 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rke2
+  name: kube-system
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
-      path: src/argocd/bootstrap-resources/rke2
+      path: src/argocd/bootstrap-resources/kube-system
       targetRevision: main
     - repoURL: https://democratic-csi.github.io/charts
       chart: snapshot-controller
