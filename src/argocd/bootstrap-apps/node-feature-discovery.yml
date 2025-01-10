@@ -62,3 +62,11 @@ spec:
         factor: 2
     syncOptions:
       - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels: # The labels to set on the application namespace
+        # PodSecurity: hostPath volumes (volumes "host-boot", 
+        #   "host-os-release", "host-sys", "host-usr-lib", 
+        #   "host-lib", "source-d", "features-d")
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: privileged
+        pod-security.kubernetes.io/warn: privileged
