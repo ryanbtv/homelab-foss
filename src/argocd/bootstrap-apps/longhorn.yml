@@ -22,9 +22,9 @@ spec:
             allowCollectingLonghornUsageMetrics: false
             defaultDataLocality: best-effort
             nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-          #metrics:
-          #  serviceMonitor:
-          #    enabled: true
+          metrics:
+            serviceMonitor:
+              enabled: true
 
   destination:
     namespace: longhorn-system

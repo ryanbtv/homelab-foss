@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: emqx
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/emqx
+      targetRevision: main
+    - repoURL: https://repos.emqx.io/charts
+      chart: emqx-operator
+      targetRevision: 2.2.26
+      helm:
+        releaseName: emqx-operator
+        valuesObject:
+          replicaCount: 3
+  destination:
+    namespace: emqx-system
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 5s
+        maxDuration: 5m0s
+        factor: 2
+    syncOptions:
+      - CreateNamespace=true
