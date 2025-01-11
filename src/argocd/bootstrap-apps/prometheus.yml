@@ -1,0 +1,75 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  source:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: v67.9.0
+      helm:
+        releaseName: kube-prometheus-stack
+        valuesObject:
+          kubeProxy:
+            service:
+              selector:
+                component: kube-proxy
+          prometheus:
+            enabled: true
+            service:
+              enabled: true
+              loadBalancerIP: "10.1.50.3"
+              type: LoadBalancer
+            prometheusSpec:
+              additionalScrapeConfigs: |
+                - job_name: "serviceMonitor/ryanb.tv/prometheus-pve-node-exporter"
+                  static_configs:
+                  - targets: 
+                    - pve01.ff.lan:9100
+                    - pve02.ff.lan:9100
+                    - sff01.ff.lan:9100
+                    - sff02.ff.lan:9100
+                    - sff03.ff.lan:9100
+              storageSpec: 
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: longhorn
+                    accessModes:
+                    - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: 50Gi
+              podMonitorSelectorNilUsesHelmValues: false
+              serviceMonitorSelectorNilUsesHelmValues: false
+              ruleSelectorNilUsesHelmValues: false
+            externalUrl: https://prometheus.ryanb.tv
+          alertmanager:
+            enabled: false
+          windowsMonitoring:
+            enabled: false
+          crds:
+            enabled: true
+  destination:
+    namespace: prometheus
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        maxDuration: 3m0s
+        factor: 2
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    managedNamespaceMetadata:
+      labels:
+        ryanb.tv/prometheus-monitored: enabled # Required for ServiceMonitor to work via Prometheus.
