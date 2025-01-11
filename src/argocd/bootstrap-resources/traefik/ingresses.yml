@@ -43,3 +43,21 @@ spec:
           port: http
           scheme: h2c
   tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kube-prometheus-stack-prometheus
+  namespace: prometheus
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`prometheus.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: kube-prometheus-stack-prometheus
+          kind: Service
+          port: http-web
+  tls: {}

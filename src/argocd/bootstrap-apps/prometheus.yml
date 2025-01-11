@@ -53,9 +53,6 @@ spec:
             enabled: false
           crds:
             enabled: true
-    - repoURL: https://github.com/ryanbtv/homelab-foss.git
-      path: src/argocd/bootstrap-resources/prometheus
-      targetRevision: main
   destination:
     namespace: prometheus
     server: 'https://kubernetes.default.svc'
