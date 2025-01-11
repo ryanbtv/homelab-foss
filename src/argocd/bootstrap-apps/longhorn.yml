@@ -42,3 +42,14 @@ spec:
         factor: 2
     syncOptions:
       - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels: # TError creating: pods 
+      #   "longhorn-manager-c8h67" is forbidden: 
+      #   violates PodSecurity "baseline:latest":
+      #   hostPath volumes (volumes "dev", "proc", 
+      #   "longhorn"), privileged (container 
+      #   "longhorn-manager" must not set 
+      #   securityContext.privileged=true)
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: privileged
+        pod-security.kubernetes.io/warn: privileged
