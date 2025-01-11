@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: emqx
+  namespace: emqx-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`emqx.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: emqx-dashboard
+          kind: Service
+          port: dashboard
+  tls: {}

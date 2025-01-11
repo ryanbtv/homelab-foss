@@ -11,6 +11,13 @@ spec:
       env:
       - name: EMQX_MQTT__MAX_PACKET_SIZE
         value: 256MB
+      volumeClaimTemplates:
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 1Gi
+        accessModes:
+          - ReadWriteOnce
   bootstrapAPIKeys:
     - key: some_api_key
       secret: some_api_secret
