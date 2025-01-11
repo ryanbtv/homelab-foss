@@ -5,7 +5,7 @@ metadata:
   name: kube-system
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
@@ -26,6 +26,6 @@ spec:
       prune: true
       selfHeal: true
     retry:
-      limit: 5
+      limit: 10
     syncOptions:
       - CreateNamespace=true

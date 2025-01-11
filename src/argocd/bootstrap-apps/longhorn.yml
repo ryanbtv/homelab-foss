@@ -1,31 +1,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: longhorn
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
-      path: src/argocd/bootstrap-resources/cert-manager
+      path: src/argocd/bootstrap-resources/longhorn
       targetRevision: main
-    - repoURL: https://charts.jetstack.io
-      chart: cert-manager
-      targetRevision: v1.16.2
+    - repoURL: https://longhorn.github.io/charts
+      chart: longhorn-crds
+      targetRevision: v1.6.2
       helm:
-        releaseName: cert-manager
+        releaseName: longhorn
         valuesObject:
-          crds:
-            enabled: true
-          replicaCount: 3
-          podDisruptionBudget:
-            enabled: true
-          extraArgs:
-            - --dns01-recursive-nameservers-only
-            - --dns01-recursive-nameservers=adam.ns.cloudflare.com:53,betty.ns.cloudflare.com:53
+          preUpgradeChecker:
+            jobEnabled: false
+          defaultSettings:
+            allowCollectingLonghornUsageMetrics: false
+            defaultDataLocality: best-effort
+            nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+          metrics:
+            serviceMonitor:
+              enabled: true
+
   destination:
-    namespace: cert-manager
+    namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   project: default
   syncPolicy:
