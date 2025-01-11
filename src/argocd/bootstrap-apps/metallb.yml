@@ -46,11 +46,8 @@ spec:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
     managedNamespaceMetadata:
-      labels: # The labels to set on the application namespace
-        # PodSecurity: Non-default capabilities (containers "speaker",
-        #   "frr" must not include "NET_ADMIN", "NET_RAW", "SYS_ADMIN" in 
-        #   securityContext.capabilities.add), host namespaces (hostNetwork=true),
-        #   hostPort (containers "speaker", "frr-metrics" use hostPorts 7472, 7473, 7946)
+      labels:
+        # PodSecurity: Non-default capabilities (containers "speaker", "frr" must not include "NET_ADMIN", "NET_RAW", "SYS_ADMIN" in  securityContext.capabilities.add), host namespaces (hostNetwork=true), hostPort (containers "speaker", "frr-metrics" use hostPorts 7472, 7473, 7946)
         pod-security.kubernetes.io/enforce: privileged
         pod-security.kubernetes.io/audit: privileged
         pod-security.kubernetes.io/warn: privileged
