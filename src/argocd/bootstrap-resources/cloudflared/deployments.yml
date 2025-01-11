@@ -57,13 +57,9 @@ spec:
           # --from-file=credentials.json=/Users/yourusername/.cloudflared/<tunnel ID>.json
           # ```
           secretName: tunnel-credentials
-      # Create a config.yaml file from the ConfigMap below.
       - name: config
-        configMap:
-          name: cloudflared
-          items:
-          - key: config.yaml
-            path: config.yaml
+        secret:
+          secretName: tunnel-config
       dnsConfig:
         options:
           - name: ndots
