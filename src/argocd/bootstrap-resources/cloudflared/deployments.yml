@@ -17,6 +17,7 @@ spec:
       - name: cloudflared
         image: docker.io/cloudflare/cloudflared:2025.1.0
         command:
+          - cloudflared
           - tunnel
           # Points cloudflared to the config file, which configures what
           # cloudflared will actually do. This file is created by a ConfigMap
