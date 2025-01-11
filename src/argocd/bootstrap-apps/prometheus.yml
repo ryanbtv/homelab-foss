@@ -76,3 +76,7 @@ spec:
     managedNamespaceMetadata:
       labels:
         ryanb.tv/prometheus-monitored: enabled # Required for ServiceMonitor to work via Prometheus.
+        # PodSecurity: host namespaces (hostNetwork=true, hostPID=true), hostPath volumes (volumes "proc", "sys", "root"), hostPort (container "node-exporter" uses hostPort 9100)
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: privileged
+        pod-security.kubernetes.io/warn: privileged
