@@ -1,0 +1,13 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cloudflared-sm
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/cloudflared
+  selector:
+    matchLabels:
+      ryanb.tv/app: cloudflared
+  endpoints:
+  - port: prometheus
+    interval: 15s
