@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unimus
+spec:
+  selector:
+    app.kubernetes.io/name: unimus
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8085
+    targetPort: http

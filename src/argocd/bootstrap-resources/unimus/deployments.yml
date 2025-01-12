@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unimus
+  labels:
+    app.kubernetes.io/name: unimus
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: unimus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: unimus
+    spec:
+      containers:
+      - name: unimus
+        image: docker.io/croc/unimus:2.6.0
+        ports:
+          - containerPort: 8085
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: data
+            mountPath: /etc/unimus
+        env:
+        - name: TZ
+          value: 'America/Chicago'
+        - name: JAVA_OPTS
+          value: '-Xms256M -Xmx1024M -Dunimus.core.connect-timeout=20000 -Dunimus.core.inter-connection-delay=1000 -Dunimus.core.cli-expect-timeout=30000'
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: unimus-data-pvc

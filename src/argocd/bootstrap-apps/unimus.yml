@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unimus
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/unimus
+      targetRevision: main
+    - repoURL: registry-1.docker.io/bitnamicharts
+      chart: postgresql-ha
+      targetRevision: 15.1.4
+      helm:
+        releaseName: postgresql-ha
+        valuesObject:
+          postgresql:
+            username: unimus
+            database: unimus
+            existingSecret: unimus-credentials
+  destination:
+    namespace: unimus
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+    syncOptions:
+      - CreateNamespace=true

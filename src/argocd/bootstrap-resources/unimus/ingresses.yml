@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: unimus
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`unimus.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: unimus
+          kind: Service
+          port: http
+  tls: {}
