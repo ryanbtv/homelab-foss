@@ -19,12 +19,17 @@ spec:
         command:
           - cloudflared
           - tunnel
-          # Points cloudflared to the config file, which configures what
-          # cloudflared will actually do. This file is created by a ConfigMap
-          # below.
-          - --config
-          - /etc/cloudflared/config/config.yaml
           - run
+        env:
+        - name: NO_AUTOUPDATE
+          value: "true"
+        - name: TUNNEL_METRICS
+          value: 0.0.0.0:9100
+        - name: TUNNEL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: tunnel-token
+              key: tunnel-token
         ports:
         - containerPort: 9100
           name: http
@@ -38,29 +43,6 @@ spec:
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
-        volumeMounts:
-        - name: config
-          mountPath: /etc/cloudflared/config
-          readOnly: true
-        # Each tunnel has an associated "credentials file" which authorizes machines
-        # to run the tunnel. cloudflared will read this file from its local filesystem,
-        # and it'll be stored in a k8s secret.
-        - name: creds
-          mountPath: /etc/cloudflared/creds
-          readOnly: true
-      volumes:
-      - name: creds
-        secret:
-          # By default, the credentials file will be created under ~/.cloudflared/<tunnel ID>.json
-          # when you run `cloudflared tunnel create`. You can move it into a secret by using:
-          # ```sh
-          # kubectl create secret generic tunnel-credentials \
-          # --from-file=credentials.json=/Users/yourusername/.cloudflared/<tunnel ID>.json
-          # ```
-          secretName: tunnel-credentials
-      - name: config
-        secret:
-          secretName: tunnel-config
       dnsConfig:
         options:
           - name: ndots
