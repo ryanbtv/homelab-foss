@@ -28,6 +28,9 @@ spec:
       - name: EMQX_MQTT__MAX_PACKET_SIZE
         value: 256MB
   listenersServiceTemplate:
+    metadata:
+      labels:
+        ryanb.tv/app: emqx
     spec:
       type: LoadBalancer
       loadBalancerIP: 10.1.50.4
