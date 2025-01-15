@@ -19,6 +19,8 @@ spec:
             username: healthchecks
             database: healthchecks
             existingSecret: healthchecks-credentials
+          pgpool:
+            customUsersSecret: healthchecks-credentials
   destination:
     namespace: healthchecks
     server: 'https://kubernetes.default.svc'

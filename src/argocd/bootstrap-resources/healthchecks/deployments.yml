@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthchecks
+  labels:
+    app.kubernetes.io/name: healthchecks
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: healthchecks
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: healthchecks
+    spec:
+      containers:
+      - name: healthchecks
+        image: lscr.io/linuxserver/healthchecks:version-v3.9
+        ports:
+          - containerPort: 8000
+            name: http
+            protocol: TCP
+        env:
+        - name: DB
+          value: postgres
+        - name: DB_HOST
+          value: postgresql-ha-pgpool.healthchecks.svc.cluster.local
+        - name: DB_PORT
+          value: '5432'
+        - name: DEBUG
+          value: "False"
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: TZ
+          value: "America/Chicago"
+        - name: SITE_NAME
+          value: 'Healtchecks'
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_DB_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_DB_NAME
+        - name: SUPERUSER_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SUPERUSER_EMAIL
+        - name: SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SUPERUSER_PASSWORD
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SECRET_KEY
+        - name: SITE_ROOT
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SITE_ROOT
+        - name: SLACK_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SLACK_CLIENT_ID
+        - name: SLACK_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: healthchecks-credentials
+              key: HC_SLACK_CLIENT_SECRET
+        livenessProbe:
+          httpGet:
+            path: /api/v1/status
+            port: http
+          initialDelaySeconds: 300
+          periodSeconds: 10

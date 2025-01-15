@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: healthchecks
+  namespace: healthchecks
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`hc.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: healthchecks
+          kind: Service
+          namespace: healthchecks
+          port: http
+  tls: {}
