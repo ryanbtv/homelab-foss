@@ -15,7 +15,6 @@ metadata:
   name: services-advertisement
   namespace: metallb
 spec:
-  aggregationLength: 27
   ipAddressPools:
   - services-pool
 
