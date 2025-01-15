@@ -46,9 +46,9 @@ spec:
                     - ReadWriteOnce
                     resources:
                       requests:
-                        storage: 25Gi
+                        storage: 50Gi
               podMonitorSelectorNilUsesHelmValues: false
-              serviceMonitorSelectorNilUsesHelmValues: false
+              servizceMonitorSelectorNilUsesHelmValues: false
               ruleSelectorNilUsesHelmValues: false
             externalUrl: https://prometheus.ryanb.tv
           alertmanager:
