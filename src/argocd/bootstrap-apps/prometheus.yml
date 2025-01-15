@@ -8,6 +8,9 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/prometheus
+      targetRevision: main
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
       targetRevision: v67.9.0
@@ -34,6 +37,7 @@ spec:
                     - sff01.ff.lan:9100
                     - sff02.ff.lan:9100
                     - sff03.ff.lan:9100
+                    - tasmota01.ff.lan:9100
               storageSpec: 
                 volumeClaimTemplate:
                   spec:
