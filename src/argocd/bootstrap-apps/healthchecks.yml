@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: healthchecks
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/healthchecks
+      targetRevision: main
+    - repoURL: registry-1.docker.io/bitnamicharts
+      chart: postgresql-ha
+      targetRevision: 14.3.10
+      helm:
+        releaseName: postgresql-ha
+        valuesObject:
+          postgresql:
+            username: healthchecks
+            database: healthchecks
+            existingSecret: healthchecks-credentials
+  destination:
+    namespace: healthchecks
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+    syncOptions:
+      - CreateNamespace=true
