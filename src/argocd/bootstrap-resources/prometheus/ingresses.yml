@@ -1,3 +1,4 @@
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -10,6 +11,23 @@ spec:
       kind: Rule
       services:
         - name: kube-prometheus-stack-prometheus
+          kind: Service
+          port: http-web
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: kube-prometheus-stack-grafana
           kind: Service
           port: http-web
   tls: {}
