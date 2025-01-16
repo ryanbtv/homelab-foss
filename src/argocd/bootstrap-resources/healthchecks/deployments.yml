@@ -29,7 +29,7 @@ spec:
         - name: DB
           value: postgres
         - name: DB_HOST
-          value: postgresql-ha-pgpool.healthchecks.svc.cluster.local
+          value: healthchecks-ha.healthchecks.svc.cluster.local
         - name: DB_PORT
           value: '5432'
         - name: DEBUG
@@ -97,6 +97,8 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
   name: healthchecks
+  annotations:
+    postgres-operator.crunchydata.com/autoCreateUserSchema: "true"
 spec:
   postgresVersion: 16
   users:
@@ -105,6 +107,7 @@ spec:
         - healthchecks
   instances:
     - name: instance1
+      replicas: 2
       dataVolumeClaimSpec:
         accessModes:
         - "ReadWriteOnce"
@@ -122,3 +125,11 @@ spec:
             resources:
               requests:
                 storage: 10Gi
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        pg_hba:
+          - "hostnossl all all all md5"
+  monitoring:
+    pgmonitor:
+      exporter: {}
