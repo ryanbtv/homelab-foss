@@ -36,3 +36,46 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: unimus-data-pvc
+
+---
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: unimus
+  annotations:
+    postgres-operator.crunchydata.com/autoCreateUserSchema: "true"
+spec:
+  postgresVersion: 17
+  users:
+    - name: unimus
+      databases:
+        - unimus
+    - name: postgres
+  instances:
+    - name: instance1
+      replicas: 2
+      dataVolumeClaimSpec:
+        accessModes:
+        - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 5Gi
+  backups:
+    pgbackrest:
+      repos:
+      - name: repo1
+        volume:
+          volumeClaimSpec:
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: 10Gi
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        pg_hba:
+          - "hostnossl all all all md5"
+  monitoring:
+    pgmonitor:
+      exporter: {}
