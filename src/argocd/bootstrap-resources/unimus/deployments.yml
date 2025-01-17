@@ -25,17 +25,18 @@ spec:
             name: http
             protocol: TCP
         volumeMounts:
-          - name: data
+          - name: config
             mountPath: /etc/unimus
+            readOnly: true
         env:
         - name: TZ
           value: 'America/Chicago'
         - name: JAVA_OPTS
           value: '-Xms256M -Xmx1024M -Dunimus.core.connect-timeout=20000 -Dunimus.core.inter-connection-delay=1000 -Dunimus.core.cli-expect-timeout=30000'
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: unimus-data-pvc
+        - name: config
+          secret:
+            secretName: unimus-config
 
 ---
 apiVersion: postgres-operator.crunchydata.com/v1beta1
