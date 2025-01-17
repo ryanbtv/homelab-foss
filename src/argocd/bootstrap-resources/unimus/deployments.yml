@@ -27,7 +27,6 @@ spec:
         volumeMounts:
           - name: config
             mountPath: /etc/unimus
-            readOnly: true
         env:
         - name: TZ
           value: 'America/Chicago'
