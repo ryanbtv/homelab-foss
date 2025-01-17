@@ -18,6 +18,14 @@ spec:
     namespace: node-feature-discovery
     server: "https://kubernetes.default.svc"
   project: default
+  # Ignore differences for the innodbclusters.mysql.oracle.com CRD
+  ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: innodbclusters.mysql.oracle.com
+      jsonPointers:
+        # - /spec/versions[0].schema.openAPIV3Schema.properties.spec.properties.keyring.properties.oci.properties.endpoints.description
+        - /spec
   syncPolicy:
     automated:
       prune: true
