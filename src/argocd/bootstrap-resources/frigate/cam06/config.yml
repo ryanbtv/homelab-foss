@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://cam06.ryanb.tv/api/config/schema.json
+mqtt:
+  host: 10.1.50.4
+  port: 1883
+  stats_interval: 60
+  topic_prefix: cam06
+  client_id: cam06
+  user: frigate
+  password: frigate
+
+database:
+  path: /config/frigate.db
+
+auth:
+  # Optional: Enable authentication
+  enabled: False
+
+record:
+  enabled: True
+  retain:
+    days: 7
+    mode: all
+
+detect:
+  enabled: false
+
+snapshots:
+  enabled: True
+
+birdseye:
+  enabled: False
+
+logger:
+  default: info
+
+cameras:
+  cam06:
+    ffmpeg:
+      inputs:
+        - path: rtsp://10.1.40.16:8554/cam06 # go2rtc container
+          input_args: preset-rtsp-restream-low-latency
+          roles:
+            - record

@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-cam03
+  labels:
+    app.kubernetes.io/name: frigate-cam03
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frigate-cam03
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frigate-cam03
+    spec:
+      securityContext:
+        fsGroup: 1000
+      nodeName: k8s03
+      containers:
+      - name: frigate-cam03
+        image: ghcr.io/blakeblackshear/frigate:0.14.1
+        ports:
+        - containerPort: 5000
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: frigate-cam03-configdir
+          mountPath: /config
+        - name: frigate-cam03-configmap
+          mountPath: /config/config.yml
+          subPath: config.yml
+        - mountPath: /media/frigate
+          name: frigate-data
+        - mountPath: /dev/shm
+          name: dshm
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        livenessProbe:
+          httpGet:
+            path: /api
+            port: 5000
+          initialDelaySeconds: 300
+          periodSeconds: 10
+      priorityClassName: high-priority
+      restartPolicy: Always
+      volumes:
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+        name: dshm
+      - name: frigate-cam03-configmap
+        configMap:
+          name: frigate-cam03-config
+      - name: frigate-cam03-configdir
+        persistentVolumeClaim:
+          claimName: frigate-cam03-pvc
+      - name: frigate-data
+        nfs:
+          path: /mnt/hdd/nvr/cam03
+          server: 10.1.60.6
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go2rtc-cam03
+  labels:
+    app.kubernetes.io/name: go2rtc-cam03
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: go2rtc-cam03
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: go2rtc-cam03
+    spec:
+      nodeName: k8s03
+      hostNetwork: true
+      containers:
+      - name: go2rtc-cam03
+        image: docker.io/alexxit/go2rtc:1.9.8
+        volumeMounts:
+        - name: go2rtc-cam03-configmap
+          mountPath: /config/go2rtc.yaml
+          subPath: go2rtc.yaml
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: CAMERA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: frigate-secrets
+              key: CAMERA_PASSWORD
+      priorityClassName: high-priority
+      restartPolicy: Always
+      volumes:
+      - name: go2rtc-cam03-configmap
+        configMap:
+          name: go2rtc-cam03-config

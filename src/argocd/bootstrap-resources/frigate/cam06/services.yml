@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-cam06
+  labels:
+    ryanb.tv/app: frigate
+spec:
+  selector:
+    app.kubernetes.io/name: frigate-cam06
+  ports:
+  - name: http
+    protocol: TCP
+    port: 5000
+    targetPort: http

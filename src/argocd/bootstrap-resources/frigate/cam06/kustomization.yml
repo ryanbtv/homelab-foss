@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployments.yml
+  - ingresses.yml
+  - pv.yml
+  - services.yml
+
+configMapGenerator:
+  - name: frigate-cam06-config
+    files:
+    - config.yml
+  - name: go2rtc-cam06-config
+    files:
+    - go2rtc.yaml
