@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`emqx.ryanb.tv`)
+    - match: Host(`mqtt.ryanb.tv`)
       kind: Rule
       services:
         - name: emqx-dashboard
