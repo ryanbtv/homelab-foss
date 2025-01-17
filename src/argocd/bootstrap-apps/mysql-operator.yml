@@ -11,9 +11,12 @@ spec:
       targetRevision: 2.2.2
       helm:
         releaseName: mysql-operator
+        valuesObject:
+          envs:
+            k8sClusterDomain: cluster.local
   destination:
     namespace: node-feature-discovery
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
   project: default
   syncPolicy:
     automated:
