@@ -16,6 +16,10 @@ spec:
       databases:
         - radarr-log
         - radarr-main
+    - name: prowlarr
+      databases:
+        - prowlarr-log
+        - prowlarr-main
     - name: postgres
   instances:
     - name: instance1
@@ -79,10 +83,6 @@ spec:
             subPath: sabnzbd
           - name: downloads
             mountPath: /downloads
-          - name: media
-            mountPath: /media
-          - name: tmpfs
-            mountPath: /tmpfs
         env:
         - name: TZ
           value: "America/Chicago"
@@ -177,6 +177,44 @@ spec:
           valueFrom:
             secretKeyRef:
               name: arrs-pguser-sonarr
+              key: password
+      - name: prowlarr
+        image: lscr.io/linuxserver/prowlarr
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 9696
+            name: http-prowlarr
+            protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /config
+            subPath: prowlarr
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: PUID
+          value: "1000"
+        - name: GUID
+          value: "1000"
+        - name: Prowlarr__Postgres__Host
+          valueFrom:
+            secretKeyRef:
+              name: arrs-pguser-prowlarr
+              key: host
+        - name: Prowlarr__Postgres__Port
+          valueFrom:
+            secretKeyRef:
+              name: arrs-pguser-prowlarr
+              key: port
+        - name: Prowlarr__Postgres__User
+          valueFrom:
+            secretKeyRef:
+              name: arrs-pguser-prowlarr
+              key: user
+        - name: Prowlarr__Postgres__Password
+          valueFrom:
+            secretKeyRef:
+              name: arrs-pguser-prowlarr
               key: password
       volumes:
       - name: config

@@ -25,4 +25,10 @@ spec:
         - name: arrs
           kind: Service
           port: sabnzbd
+    - match: Host(`prowlarr.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: arrs
+          kind: Service
+          port: prowlarr
   tls: {}
