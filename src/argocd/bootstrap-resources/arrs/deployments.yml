@@ -86,6 +86,10 @@ spec:
         env:
         - name: TZ
           value: "America/Chicago"
+        - name: PUID
+          value: "1000"
+        - name: GUID
+          value: "1000"
       - name: radarr
         image: lscr.io/linuxserver/radarr
         imagePullPolicy: Always
@@ -106,6 +110,10 @@ spec:
         env:
         - name: TZ
           value: "America/Chicago"
+        - name: PUID
+          value: "1000"
+        - name: GUID
+          value: "1000"
         - name: Radarr__Postgres__Host
           valueFrom:
             secretKeyRef:
@@ -146,6 +154,10 @@ spec:
         env:
         - name: TZ
           value: "America/Chicago"
+        - name: PUID
+          value: "1000"
+        - name: GUID
+          value: "1000"
         - name: Sonarr__Postgres__Host
           valueFrom:
             secretKeyRef:
