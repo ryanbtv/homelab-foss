@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: arrs
+spec:
+  selector:
+    app.kubernetes.io/name: arrs
+  ports:
+  - name: sonarr
+    protocol: TCP
+    port: 8989
+    targetPort: http-sonarr
+  - name: radarr
+    protocol: TCP
+    port: 7878
+    targetPort: http-radarr
+  - name: sabnzbd
+    protocol: TCP
+    port: 8080
+    targetPort: http-sabnzbd

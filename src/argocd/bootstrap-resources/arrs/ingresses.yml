@@ -1,0 +1,28 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: arrs
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sonarr.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: arrs
+          kind: Service
+          port: sonarr
+    - match: Host(`radarr.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: arrs
+          kind: Service
+          port: radarr
+    - match: Host(`nzb.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: arrs
+          kind: Service
+          port: sabnzbd
+  tls: {}
