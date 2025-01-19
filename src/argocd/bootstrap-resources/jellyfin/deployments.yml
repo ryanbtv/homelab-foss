@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  labels:
+    app.kubernetes.io/name: jellyfin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jellyfin
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: jellyfin
+    spec:
+      containers:
+      - name: jellyfin
+        image: docker.io/linuxserver/jellyfin:amd64-10.10.3
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8096
+            name: http-jellyfin
+            protocol: TCP
+        volumeMounts:
+          - name: jellyfin-config
+            mountPath: /config
+          - name: media
+            mountPath: /media
+          - name: tmpfs
+            mountPath: /transcode
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: PUID
+          value: "1000"
+        - name: GUID
+          value: "1000"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http-jellyfin
+          initialDelaySeconds: 300
+          periodSeconds: 10
+      volumes:
+      - name: jellyfin-config
+        persistentVolumeClaim:
+          claimName: jellyfin-config-pvc
+      - name: media
+        nfs:
+          path: /mnt/hdd/media
+          server: 10.1.60.6
+      - name: tmpfs
+        emptyDir:
+          medium: Memory
