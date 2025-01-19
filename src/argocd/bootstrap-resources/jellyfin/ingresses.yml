@@ -1,3 +1,4 @@
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -10,6 +11,41 @@ spec:
       kind: Rule
       services:
         - name: jellyfin
+          kind: Service
+          port: http
+  tls: {}
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wizarr
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`account.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: wizarr
+          kind: Service
+          port: http
+  tls: {}
+
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jellyseerr
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`requests.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: jellyseerr
           kind: Service
           port: http
   tls: {}

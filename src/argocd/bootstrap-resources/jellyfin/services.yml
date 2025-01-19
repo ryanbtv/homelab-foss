@@ -13,3 +13,35 @@ spec:
     protocol: TCP
     port: 8096
     targetPort: http-jellyfin
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wizarr
+  labels:
+    ryanb.tv/app: wizarr
+spec:
+  selector:
+    app.kubernetes.io/name: wizarr
+  ports:
+  - name: http
+    protocol: TCP
+    port: 5690
+    targetPort: http-wizarr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyseerr
+  labels:
+    ryanb.tv/app: jellyseerr
+spec:
+  selector:
+    app.kubernetes.io/name: jellyseerr
+  ports:
+  - name: http
+    protocol: TCP
+    port: 5055
+    targetPort: http-jellyseerr
