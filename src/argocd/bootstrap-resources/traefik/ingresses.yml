@@ -35,7 +35,7 @@ spec:
       services:
         - name: argocd-server
           port: https
-    - match: Host(`cd.ryanb.tv`) && Headers(`Content-Type`, `application/grpc`)
+    - match: Host(`cd.ryanb.tv`) && Header(`Content-Type`, `application/grpc`)
       kind: Rule
       priority: 11
       services:
