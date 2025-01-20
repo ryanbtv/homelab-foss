@@ -60,47 +60,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wizarr
-  labels:
-    app.kubernetes.io/name: wizarr
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: wizarr
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: wizarr
-    spec:
-      containers:
-      - name: wizarr
-        image: ghcr.io/wizarrrr/wizarr:4.2.0
-        imagePullPolicy: Always
-        ports:
-          - containerPort: 5690
-            name: http-wizarr
-            protocol: TCP
-        volumeMounts:
-          - name: wizarr-config
-            mountPath: /data/database
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http-wizarr
-          initialDelaySeconds: 300
-          periodSeconds: 10
-      volumes:
-      - name: wizarr-config
-        persistentVolumeClaim:
-          claimName: wizarr-config-pvc
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: jellyseerr
   labels:
     app.kubernetes.io/name: jellyseerr
