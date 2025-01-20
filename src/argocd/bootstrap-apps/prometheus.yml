@@ -25,8 +25,6 @@ spec:
             enabled: true
             service:
               enabled: true
-              loadBalancerIP: "10.1.50.3"
-              type: LoadBalancer
             prometheusSpec:
               additionalScrapeConfigs: |
                 - job_name: "serviceMonitor/ryanb.tv/prometheus-pve-node-exporter"
@@ -37,7 +35,6 @@ spec:
                     - sff01.ff.lan:9100
                     - sff02.ff.lan:9100
                     - sff03.ff.lan:9100
-                    - tasmota01.ff.lan:9100
               storageSpec: 
                 volumeClaimTemplate:
                   spec:
@@ -53,6 +50,15 @@ spec:
             externalUrl: https://prometheus.ryanb.tv
           alertmanager:
             enabled: false
+          grafana:
+            # Use an existing secret for the admin user.
+            admin:
+              ## Name of the secret. Can be templated.
+              existingSecret: grafana-credentials
+              userKey: admin-user
+              passwordKey: admin-password
+            persistence:
+              enabled: false
           windowsMonitoring:
             enabled: false
           crds:
