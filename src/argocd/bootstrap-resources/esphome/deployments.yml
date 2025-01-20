@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esphome
+  labels:
+    app.kubernetes.io/name: esphome
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: esphome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: esphome
+    spec:
+      containers:
+      - name: esphome
+        image: ghcr.io/esphome/esphome:2024.11
+        ports:
+          - containerPort: 6052
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /config
+        env:
+        - name: ESPHOME_DASHBOARD_USE_PING
+          value: "true"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: esphome-config-pvc
