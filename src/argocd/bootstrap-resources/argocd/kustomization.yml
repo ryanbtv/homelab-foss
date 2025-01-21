@@ -6,5 +6,8 @@ resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.3/manifests/ha/install.yaml
 - repositories.yml
 
+# Multus:
+- https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/refs/tags/v4.1.4/deployments/multus-daemonset-thick.yml
+
 patches:
   - path: patch-argocd-cm.yml

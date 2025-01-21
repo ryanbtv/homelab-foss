@@ -22,3 +22,9 @@ spec:
       limit: 10
     syncOptions:
       - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+      # Multus violates PodSecurity "baseline:latest": host namespaces (hostNetwork=true, hostPID=true), hostPath volumes (volumes "cni ", "cnibin", "hostroot", "host-run", "host-var-lib-cni-multus", "host-var-lib-kubelet", "host-run-k8s-cni-cncf-io", "host-run-netns"), privileged (containers "install-multus-binary", "kube-multus" must not set securityContext.privileged=true)     Warning  FailedCreate  11s (x4 over 29s)  daemonset-controller  (combined from similar events): Error creating: pods "kube-multus-ds-ln449" is forbidden: violates PodSecurity "baseline:latest": host namespaces (hostNetwork=true, hostPID=true) , hostPath volumes (volumes "cni", "cnibin", "hostroot", "host-run", "host-var-lib-cni-multus", "host-var-lib-kubelet", "host-run-k8s-cni-cncf-io", "host-run-netns"), privileged (containers "install-multus-binary", "kube-multus" must not set se curityContext.privileged=true)
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: privileged
+        pod-security.kubernetes.io/warn: privileged
