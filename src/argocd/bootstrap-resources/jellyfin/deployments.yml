@@ -38,12 +38,6 @@ spec:
           value: "1000"
         - name: GUID
           value: "1000"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http-jellyfin
-          initialDelaySeconds: 300
-          periodSeconds: 10
       volumes:
       - name: jellyfin-config
         persistentVolumeClaim:
