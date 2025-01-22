@@ -21,26 +21,63 @@ spec:
         fsGroup: 1000
       containers:
       - name: files
-        image: docker.io/owncloud/ocis:latest
+        image: docker.io/drakkan/sftpgo:v2.6.4-plugins
         ports:
-          - containerPort: 9200
+          - containerPort: 8080
             name: http
             protocol: TCP
         volumeMounts:
-          - name: ocis-config
-            mountPath: /etc/ocis
-          - name: files
-            mountPath: /var/lib/ocis
+        - mountPath: /data
+          name: data
+        - mountPath: /var/lib/sftpgo
+          name: config
         env:
-        - name: OCIS_URL
-          value: "https://files.ryanb.tv"
-        - name: OCIS_ENABLE_OCM
-          value: "false"
+        - name: SFTPGO_HTTPD__TOKEN_VALIDATION
+          value: "1"
+        - name: SFTPGO_PLUGIN_AUTH_LDAP_URL
+          valueFrom:
+            secretKeyRef:
+              name: files-envs
+              key: SFTPGO_PLUGIN_AUTH_LDAP_URL
+        - name: SFTPGO_PLUGIN_AUTH_LDAP_BASE_DN
+          valueFrom:
+            secretKeyRef:
+              name: files-envs
+              key: SFTPGO_PLUGIN_AUTH_LDAP_BASE_DN
+        - name: SFTPGO_PLUGIN_AUTH_LDAP_BIND_DN
+          valueFrom:
+            secretKeyRef:
+              name: files-envs
+              key: SFTPGO_PLUGIN_AUTH_LDAP_BIND_DN
+        - name: SFTPGO_PLUGIN_AUTH_LDAP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: files-envs
+              key: SFTPGO_PLUGIN_AUTH_LDAP_PASSWORD
+        - name: SFTPGO_PLUGIN_AUTH_LDAP_SEARCH_QUERY
+          valueFrom:
+            secretKeyRef:
+              name: files-envs
+              key: SFTPGO_PLUGIN_AUTH_LDAP_SEARCH_QUERY
+        - name: SFTPGO_PLUGIN_AUTH_PRIMARY_GROUP_PREFIX
+          value: "sftpgo-"
+        - name: SFTPGO_PLUGIN_AUTH_REQUIRE_GROUPS
+          value: "true"
+        - name: SFTPGO_PLUGINS__0__TYPE
+          value: auth
+        - name: SFTPGO_PLUGINS__0__AUTH_OPTIONS__SCOPE
+          value: "5"
+        - name: SFTPGO_PLUGINS__0__CMD
+          value: /usr/local/bin/sftpgo-plugin-auth
+        - name: SFTPGO_PLUGINS__0__ARGS
+          value: serve
+        - name: SFTPGO_PLUGINS__0__AUTO_MTLS
+          value: "1"
       volumes:
-      - name: ocis-config
-        secret:
-          secretName: files-config
-      - name: files
+      - name: config
+        persistentVolumeClaim:
+          claimName: files-config-pvc
+      - name: data
         nfs:
           path: /mnt/hdd/media/dufs
           server: 10.1.60.6
