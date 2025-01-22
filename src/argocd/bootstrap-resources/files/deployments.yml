@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: files
+  labels:
+    app.kubernetes.io/name: files
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: files
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: files
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: files
+        image: docker.io/owncloud/ocis:latest
+        ports:
+          - containerPort: 9200
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - name: ocis-config
+            mountPath: /etc/ocis
+          - name: files
+            mountPath: /var/lib/ocis
+        env:
+        - name: OCIS_URL
+          value: "https://files.ryanb.tv"
+        - name: OCIS_ENABLE_OCM
+          value: "false"
+      volumes:
+      - name: ocis-config
+        secret:
+          secretName: files-config
+      - name: files
+        nfs:
+          path: /mnt/hdd/media/dufs
+          server: 10.1.60.6
