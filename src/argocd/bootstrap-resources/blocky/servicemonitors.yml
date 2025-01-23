@@ -1,0 +1,13 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: blocky-sm
+spec:
+  jobLabel: serviceMonitor/ryanb.tv/blocky
+  selector:
+    matchLabels:
+      ryanb.tv/app: blocky
+  endpoints:
+  - port: metrics
+    interval: 15s

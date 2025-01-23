@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: blocky
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/argocd/bootstrap-resources/blocky
+      targetRevision: main
+    - repoURL: registry-1.docker.io/bitnamicharts  # note: the oci:// syntax is not included.
+      chart: redis-cluster
+      targetRevision: '11.4.0'
+      helm:
+        releaseName: redis-cluster
+        valuesObject:
+          cluster:
+            externalAccess:
+              service:
+                type: LoadBalancer
+                loadBalancerIP: "10.1.50.3"
+            persistence:
+              storageClass: "longhorn"
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+  destination:
+    namespace: blocky
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 5s
+        maxDuration: 5m0s
+        factor: 2
+    syncOptions:
+      - CreateNamespace=true

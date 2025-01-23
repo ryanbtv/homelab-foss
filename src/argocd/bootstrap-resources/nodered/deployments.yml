@@ -17,8 +17,7 @@ spec:
       labels:
         app.kubernetes.io/name: nodered
     spec:
-      securityContext:
-        fsGroup: 1000
+      hostNetwork: true
       containers:
       - name: nodered
         image: docker.io/nodered/node-red:4.0.8
@@ -29,6 +28,8 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /data
+      securityContext:
+        fsGroup: 1000
       volumes:
       - name: data
         persistentVolumeClaim:
