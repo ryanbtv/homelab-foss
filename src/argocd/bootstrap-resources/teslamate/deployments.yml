@@ -1,4 +1,62 @@
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teslamate
+  labels:
+    app.kubernetes.io/name: teslamate
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0 
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: teslamate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: teslamate
+    spec:
+      containers:
+      - name: teslamate
+        image: docker.io/teslamate/teslamate:1.32
+        ports:
+          - containerPort: 4000
+            name: http
+            protocol: TCP
+        env:
+        - name: MQTT_HOST
+          value: emqx-listeners.emqx-system.svc.cluster.local
+        - name: MQTT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-credentials
+              key: MQTT_PASSWORD
+        - name: ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-credentials
+              key: password
+        - name: DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-pguser-teslamate
+              key: host
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-pguser-teslamate
+              key: dbname
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-pguser-teslamate
+              key: user
+        - name: DATABASE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: teslamate-pguser-teslamate
+              key: password
 
 ---
 apiVersion: postgres-operator.crunchydata.com/v1beta1
