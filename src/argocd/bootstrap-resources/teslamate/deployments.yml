@@ -38,7 +38,7 @@ spec:
     dynamicConfiguration:
       postgresql:
         pg_hba:
-          - "hostnossl all all all md5"
+          - "host all all all md5"
   monitoring:
     pgmonitor:
       exporter: {}
