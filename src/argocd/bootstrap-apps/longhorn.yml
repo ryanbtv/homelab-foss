@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: longhorn
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
@@ -12,7 +10,7 @@ spec:
       targetRevision: main
     - repoURL: https://charts.longhorn.io
       chart: longhorn
-      targetRevision: v1.6.2
+      targetRevision: v1.8.0
       helm:
         releaseName: longhorn
         valuesObject:
@@ -29,6 +27,8 @@ spec:
           metrics:
             serviceMonitor:
               enabled: true
+              annotations:
+                argocd.argoproj.io/sync-options: "SkipDryRunOnMissingResource=true"
   destination:
     namespace: longhorn-system
     server: 'https://kubernetes.default.svc'

@@ -4,8 +4,6 @@ kind: Application
 metadata:
   name: metallb
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git

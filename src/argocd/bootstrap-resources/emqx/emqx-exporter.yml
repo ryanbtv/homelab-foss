@@ -17,6 +17,8 @@ metadata:
   name: emqx-metrics
   labels:
     app: emqx-metrics
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   selector:
     matchLabels:
@@ -122,6 +124,8 @@ metadata:
   name: emqx-exporter
   labels:
     app: emqx-exporter
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   selector:
     matchLabels:

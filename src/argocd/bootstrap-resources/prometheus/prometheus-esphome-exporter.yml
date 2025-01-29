@@ -59,6 +59,8 @@ kind: ServiceMonitor
 metadata:
   name: prometheus-esphome-exporter-sm
   namespace: prometheus
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   jobLabel: serviceMonitor/ryanb.tv/esphome
   selector:

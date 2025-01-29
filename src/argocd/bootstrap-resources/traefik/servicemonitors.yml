@@ -3,6 +3,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: traefik-sm
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   jobLabel: serviceMonitor/ryanb.tv/traefik
   selector:
