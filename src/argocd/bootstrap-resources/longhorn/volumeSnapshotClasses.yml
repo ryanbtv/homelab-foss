@@ -5,6 +5,8 @@ metadata:
   name: longhorn-backup-vsc
   labels:
     velero.io/csi-volumesnapshot-class: "true"
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 driver: driver.longhorn.io
 deletionPolicy: Delete
 parameters:
