@@ -1,0 +1,36 @@
+- name: Deprovision VMs
+  hosts: k8s_cluster
+  connection: local
+  gather_facts: false
+  environment:
+    DEFAULT_JINJA2_NATIVE: 'true'
+
+  vars:
+    pve_cluster: pve
+    ansible_python_interpreter: "/usr/local/bin/python3"
+
+    vmid: "6011"
+    api_host: "sff01.ff.lan"
+
+  tasks:
+    - name: SIGTERM VMs
+      community.general.proxmox_kvm:
+        state: "stopped"
+        api_user: "{{ pve_api_user }}"
+        api_password: "{{ pve_api_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ inventory_hostname }}"
+        vmid: "{{ vmid }}"
+        force: true
+        timeout: 1
+      failed_when: false
+
+    - name: Delete VMs
+      community.general.proxmox_kvm:
+        state: "absent"
+        api_user: "{{ pve_api_user }}"
+        api_password: "{{ pve_api_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ inventory_hostname }}"
+        vmid: "{{ vmid }}"
+        force: true

@@ -1,0 +1,103 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://github.com/ryanbtv/homelab-foss.git
+      path: src/k8s/k8s.cr/argocd/resources/traefik
+      targetRevision: main
+    - repoURL: https://traefik.github.io/charts
+      chart: traefik
+      targetRevision: 33.2.1
+      helm:
+        releaseName: traefik
+        skipCrds: true
+        valuesObject:
+          deployment:
+            enabled: true
+            # Can be either Deployment or DaemonSet
+            kind: DaemonSet
+          ingressRoute:
+            dashboard:
+              enabled: false
+          providers:
+            kubernetesCRD:
+              allowExternalNameServices: true
+          kubernetesIngress:
+            enabled: true
+          globalArguments:
+            - "--global.checknewversion=false"
+            - "--global.sendanonymoususage=false"
+          additionalArguments:
+            - "--serversTransport.insecureSkipVerify=true"
+          ports:
+            web:
+              redirectTo: 
+                port: websecure
+            websecure:
+              forwardedHeaders:
+                insecure: true
+              proxyProtocol:
+                insecure: true
+            metrics:
+              expose:
+                default: true
+          service:
+            spec:
+              externalTrafficPolicy: Local
+              loadBalancerIP: "10.1.50.33"
+          logs:
+            ## Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
+            general:
+              # By default, the logs use a text format (common), but you can
+              # also ask for the json format in the format option
+              # format: json
+              # By default, the level is set to ERROR.
+              # Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+              level: INFO
+            access:
+              # To enable access logs
+              enabled: false
+              ## By default, logs are written using the Common Log Format (CLF) on stdout.
+              ## To write logs in JSON, use json in the format option.
+              ## If the given format is unsupported, the default (CLF) is used instead.
+              # format: json
+              # filePath: "/data/access.log"
+              # bufferingSize: 100
+          persistence:
+            enabled: false
+          metrics:
+            prometheus:
+              entryPoint: metrics
+              addEntryPointsLabels: true
+              addRoutersLabels: true
+              addServicesLabels: true
+              service:
+                enabled: true
+                labels:
+                  ryanb.tv/app: traefik
+    - repoURL: https://traefik.github.io/charts
+      chart: traefik-crds
+      targetRevision: 1.0.0
+      helm:
+        releaseName: traefik
+        valuesObject:
+          traefik: true
+  destination:
+    namespace: traefik
+    server: 'https://kubernetes.default.svc'
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 5s
+        maxDuration: 5m0s
+        factor: 2
+    syncOptions:
+      - CreateNamespace=true

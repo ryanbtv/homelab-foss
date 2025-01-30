@@ -1,0 +1,93 @@
+# ansible-playbook src/ansible/k8s-harbor/provision.yml -i src/ansible/k8s-harbor//hosts --extra-vars @src/ansible/k8s-harbor/secrets.yml
+
+- name: Provision VMs
+  hosts: k8s_cluster
+  connection: local   # Run this playbook for all of the 'hosts' above, but for each, run it locally
+  gather_facts: false
+  environment:
+    DEFAULT_JINJA2_NATIVE: 'true'
+
+  vars:
+    ansible_python_interpreter: "/usr/local/bin/python3"
+    template_dir: /mnt/pve/nfs-pve/template/vm # contains the template disks to build VMs
+    talos_factoryid: ba6068d6ff06ad172c42a80bcb879416efd13425b12b01e0ee9aa61464fb39e2
+    talos_version: v1.9.1
+
+    pve_image_path: "{{ template_dir }}/talos-{{ talos_factoryid }}-{{ talos_version }}.raw"
+    pve_storage: local-zfs
+
+    pve_cluster: cr
+    pve_datadisk_size: 64G
+    vmid: "6011"
+    gw: "10.1.60.1"
+    mac: "aa:bb:cc:dd:60:11"
+    vlan: "60"
+    node: "sff02"
+
+  tasks:
+    - name: Create VMs
+      community.general.proxmox_kvm:
+        state: present
+        api_user: "{{ pve_api_user }}"
+        api_password: "{{ pve_api_pass }}"
+        api_host: "{{ node }}.ff.lan"
+        name: "{{ inventory_hostname }}"
+        node: "{{ node }}"
+        vmid: "{{ vmid }}"
+        storage: '{{ pve_storage }}'
+        cpu: host
+        sockets: 2
+        cores: "{{ cpu / 2 }}"
+        memory: "{{ mem * 1024 }}"
+        scsihw: virtio-scsi-single
+        serial:
+          serial0: socket
+        scsi:
+          scsi0: '{{ pve_storage }}:0,format=raw,import-from={{ pve_image_path }},aio=threads,serial=pve-scsi0'
+          scsi1: '{{ pve_storage }}:512,format=raw,aio=threads,serial=pve-scsi1'
+        net:
+          net0: "{{ 'virtio=' + mac + ',bridge=vmbr0,tag=' + vlan }}"
+        hostpci:
+          # hostpci0: "{{ gpu | ternary('mapping=nvidia-p4,mdev=nvidia-64', omit) }}"
+          # hostpci1: "{{ tpu | ternary('mapping=coraltpu', omit) }}"
+        efidisk0:
+          storage: '{{ pve_storage }}'
+          format: raw
+          efitype: 4m
+          pre_enrolled_keys: 0
+        tpmstate0:
+          version: '2.0'
+          storage: '{{ pve_storage }}'
+        machine: q35
+        acpi: true
+        agent: true
+        autostart: true
+        balloon: 0
+        bios: ovmf
+        boot: order=scsi0
+        bootdisk: scsi0
+        format: raw
+        numa_enabled: false
+        onboot: true
+        ostype: 'l26'
+        tablet: 0
+
+    - name: Expand scsi0 to {{ pve_datadisk_size }}
+      community.general.proxmox_disk:
+        api_user: "{{ pve_api_user }}"
+        api_password: "{{ pve_api_pass }}"
+        api_host: "{{ node }}.ff.lan"
+        vmid: "{{ vmid }}"
+        disk: scsi0
+        size: "{{ pve_datadisk_size }}"
+        state: resized
+
+    - name: Start VMs
+      community.general.proxmox_kvm:
+        state: "started"
+        api_user: "{{ pve_api_user }}"
+        api_password: "{{ pve_api_pass }}"
+        api_host: "{{ node }}.ff.lan"
+        name: "{{ inventory_hostname }}"
+        vmid: "{{ vmid }}"
+        node: "{{ node }}"

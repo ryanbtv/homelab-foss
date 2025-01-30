@@ -1,0 +1,34 @@
+machine:
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: true
+  kubelet:
+    extraArgs:
+      rotate-server-certificates: true
+    extraMounts:
+      - destination: /var/mnt/data
+        type: bind
+        source: /var/mnt/data
+        options:
+          - bind
+          - rshared
+          - rw
+  disks:
+    - device: /dev/sdb # The name of the disk to use.
+      partitions:
+        - mountpoint: /var/mnt/data # Where to mount the partition.
+  sysctls:
+    net.core.bpf_jit_harden: 1
+    net.core.rmem_max: 7500000
+    net.core.wmem_max: 7500000
+  time:
+    disabled: false # Indicates if the time service is disabled for the machine.
+    servers:
+      - 25.25.25.25
+
+cluster:
+  allowSchedulingOnControlPlanes: true
+  extraManifests:
+    - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
+    - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
