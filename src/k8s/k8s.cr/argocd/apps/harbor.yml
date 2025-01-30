@@ -33,7 +33,7 @@ spec:
               registry:
                 existingClaim: harbor-storage-pvc
               database:
-                existingClaim: harbor-db-pvc
+                existingClaim: harbor-database-pvc
           containerSecurityContext:
             runAsUser: 1000
             runAsGroup: 1000
