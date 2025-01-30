@@ -1,0 +1,33 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-to-nfs
+  namespace: longhorn-system
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  concurrency: 1
+  cron: 30 0/3 * * ?
+  groups:
+  - default
+  name: backup-to-nfs
+  retain: 10
+  task: backup
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: hourly-snapshot
+  namespace: longhorn-system
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  concurrency: 1
+  cron: 0 * * * *
+  groups:
+  - default
+  name: hourly-snapshot
+  retain: 5
+  task: snapshot

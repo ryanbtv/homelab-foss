@@ -22,8 +22,6 @@ spec:
             nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
             defaultDataPath: /var/mnt/data
             storageReservedPercentageForDefaultDisk: 0
-            backupTarget: nfs://10.1.60.6:/mnt/hdd/backups/longhorn
-            restoreVolumeRecurringJobs: true
           metrics:
             serviceMonitor:
               enabled: true
