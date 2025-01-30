@@ -29,11 +29,7 @@ spec:
               IP: 10.1.50.34
           logLevel: debug
           persistence:
-            persistentVolumeClaim:
-              registry:
-                existingClaim: harbor-storage-pvc
-              database:
-                existingClaim: harbor-database-pvc
+            enabled: "true"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: harbor
