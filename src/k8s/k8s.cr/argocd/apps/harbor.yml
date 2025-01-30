@@ -8,7 +8,7 @@ spec:
   project: default
   sources:
     - repoURL: https://github.com/ryanbtv/homelab-foss.git
-      path: src/k8s/k8s.cr/argocd/resources/harbor
+      path: src/k8s/k8s.cr/argocd/resources
       targetRevision: main
     - repoURL: https://helm.goharbor.io
       chart: harbor
@@ -34,8 +34,9 @@ spec:
                 existingClaim: harbor-storage-pvc
               database:
                 existingClaim: harbor-db-pvc
-
-
+          containerSecurityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
   destination:
     server: "https://kubernetes.default.svc"
     namespace: harbor
