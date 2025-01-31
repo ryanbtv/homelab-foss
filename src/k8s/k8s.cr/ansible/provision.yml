@@ -18,10 +18,10 @@
 
     pve_cluster: cr
     pve_datadisk_size: 64G
-    vmid: "6011"
-    gw: "10.1.60.1"
-    mac: "aa:bb:cc:dd:60:11"
-    vlan: "60"
+    vmid: "4031"
+    gw: "10.1.40.1"
+    mac: "aa:bb:cc:dd:40:31"
+    vlan: "40"
     node: "sff02"
 
   tasks:

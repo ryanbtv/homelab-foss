@@ -2,3 +2,5 @@ machine:
   network:
     interfaces:
       - interface: eth0
+        vip:
+          ip: 10.1.40.30 # Sets API VIP for controlplane nodes

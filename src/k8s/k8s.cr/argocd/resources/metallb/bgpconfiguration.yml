@@ -37,5 +37,5 @@ metadata:
 spec:
   myASN: 65102
   peerASN: 65001
-  peerAddress: 10.1.60.1
+  peerAddress: 10.1.40.1
   bfdProfile: bfdprofile
