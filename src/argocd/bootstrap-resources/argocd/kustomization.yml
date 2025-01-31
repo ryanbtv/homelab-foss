@@ -5,6 +5,7 @@ namespace: argocd
 resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.3/manifests/ha/install.yaml
 - repositories.yml
+- serviceMonitors.yml
 
 patches:
   - path: patch-argocd-cm.yml
