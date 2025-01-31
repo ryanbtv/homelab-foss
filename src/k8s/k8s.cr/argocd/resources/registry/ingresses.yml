@@ -8,25 +8,25 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`docker.oci.ryanb.tv`)
+    - match: Host(`docker.cr.ryanb.tv`)
       kind: Rule
       services:
         - name: registry
           kind: Service
           port: http-dockerio
-    - match: Host(`ghcr.oci.ryanb.tv`)
+    - match: Host(`ghcr.cr.ryanb.tv`)
       kind: Rule
       services:
         - name: registry
           kind: Service
           port: http-ghcrio
-    - match: Host(`quay.oci.ryanb.tv`)
+    - match: Host(`quay.cr.ryanb.tv`)
       kind: Rule
       services:
         - name: registry
           kind: Service
           port: http-quayio
-    - match: Host(`lscr.oci.ryanb.tv`)
+    - match: Host(`lscr.cr.ryanb.tv`)
       kind: Rule
       services:
         - name: registry
