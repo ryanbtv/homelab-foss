@@ -55,11 +55,11 @@ spec:
   selector:
     app.kubernetes.io/name: prometheus-frigate-exporter
   ports:
-  - name: prometheus-nvr01
+  - name: nvr01
     protocol: TCP
     port: 9101
     targetPort: prometheus
-  - name: prometheus-nvr02
+  - name: nvr02
     protocol: TCP
     port: 9102
     targetPort: prometheus
@@ -78,7 +78,7 @@ spec:
     matchLabels:
       mylabel/app: prometheus-frigate-exporter
   endpoints:
-  - port: prometheus-nvr01
+  - port: nvr01
     interval: 15s
-  - port: prometheus-nvr02
+  - port: nvr02
     interval: 15s
