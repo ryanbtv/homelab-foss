@@ -43,7 +43,7 @@ spec:
                       requests:
                         storage: 50Gi
               podMonitorSelectorNilUsesHelmValues: false
-              servizceMonitorSelectorNilUsesHelmValues: false
+              serviceMonitorSelectorNilUsesHelmValues: false
               ruleSelectorNilUsesHelmValues: false
             externalUrl: https://prometheus.ryanb.tv
           alertmanager:
