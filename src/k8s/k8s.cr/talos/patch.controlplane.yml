@@ -4,3 +4,6 @@ machine:
       - interface: eth0
         vip:
           ip: 10.1.40.30 # Sets API VIP for controlplane nodes
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers:
+      $patch: delete
