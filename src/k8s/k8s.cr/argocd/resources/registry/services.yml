@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry
+  labels:
+    ryanb.tv/app: registry
+spec:
+  selector:
+    app.kubernetes.io/name: registry
+  ports:
+  - name: http-dockerio
+    protocol: TCP
+    port: 5000
+    targetPort: http-dockerio
+  - name: http-ghcrio
+    protocol: TCP
+    port: 5001
+    targetPort: http-ghcrio
+  - name: http-quayio
+    protocol: TCP
+    port: 5002
+    targetPort: http-quayio
+  - name: http-lscrio
+    protocol: TCP
+    port: 5003
+    targetPort: http-lscrio

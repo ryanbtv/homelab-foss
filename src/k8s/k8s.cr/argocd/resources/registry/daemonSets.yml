@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: registry
+  namespace: registry
+  labels:
+    app.kubernetes.io/name: registry
+spec:
+  revisionHistoryLimit: 0 
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: registry
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: registry
+    spec:
+      containers:
+      - name: registry-dockerio
+        image: docker.io/library/registry:2
+        ports:
+          - containerPort: 5000
+            name: http-dockerio
+            protocol: TCP
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_PROXY_REMOTEURL
+          value: https://registry-1.docker.io
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5000
+      - name: registry-ghcrio
+        image: docker.io/library/registry:2
+        ports:
+          - containerPort: 5001
+            name: http-ghcrio
+            protocol: TCP
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_PROXY_REMOTEURL
+          value: https://ghcr.io
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5001
+      - name: registry-quayio
+        image: docker.io/library/registry:2
+        ports:
+          - containerPort: 5002
+            name: http-quayio
+            protocol: TCP
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_PROXY_REMOTEURL
+          value: https://quay.io
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5002
+      - name: registry-lscrio
+        image: docker.io/library/registry:2
+        ports:
+          - containerPort: 50003
+            name: http-lscrio
+            protocol: TCP
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_PROXY_REMOTEURL
+          value: https://lscr.io
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5003
+      - name: registry-k8sio
+        image: docker.io/library/registry:2
+        ports:
+          - containerPort: 5004
+            name: http-k8sio
+            protocol: TCP
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_PROXY_REMOTEURL
+          value: https://registry.k8s.io
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5004
+      volumes:
+      - name: registry-data
+        nfs:
+          path: /mnt/hdd/k8s/registry
+          server: 10.1.60.6

@@ -1,0 +1,35 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`docker.oci.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: registry
+          kind: Service
+          port: http-dockerio
+    - match: Host(`ghcr.oci.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: registry
+          kind: Service
+          port: http-ghcrio
+    - match: Host(`quay.oci.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: registry
+          kind: Service
+          port: http-quayio
+    - match: Host(`lscr.oci.ryanb.tv`)
+      kind: Rule
+      services:
+        - name: registry
+          kind: Service
+          port: http-lscrio
+  tls: {}
