@@ -1,8 +1,12 @@
 cd ~/iCloud/Homelab/git/homelab-foss
 kubectl create ns argocd || true
 kubens argocd
-kubectl apply -k ./src/argocd/bootstrap-resources/argocd
+kubectl apply -k src/argocd/bootstrap-resources/argocd
 kubectl apply -f ~/iCloud/keys/k8s/k8s.prd.yml
+kubectl apply -f src/argocd/bootstrap-apps/longhorn.yml
+
+# Restore Longhorn Volumes
+argocd admin dashboard
 kubectl apply -f ./src/argocd/cluster-bootstrap.yml
 
 # Add ArgoCD OIDC:
